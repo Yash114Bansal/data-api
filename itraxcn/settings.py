@@ -28,8 +28,8 @@ AUTH_KEY = os.environ.get("AUTH_KEY")
 DEBUG = True
 
 ALLOWED_HOSTS = []
-
-
+ALLOWED_HOST = os.environ.get("ALLOWED_HOST")
+ALLOWED_HOSTS.append(ALLOWED_HOST)
 # Application definition
 
 INSTALLED_APPS = [
