@@ -1,0 +1,8 @@
+asgiref
+certifi
+charset-normalizer
+Django
+idna
+requests
+sqlparse
+urllib3

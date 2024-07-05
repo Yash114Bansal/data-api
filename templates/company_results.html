@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Company Details</title>
+    <style>
+        /* styles.css */
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            width: 80%;
+            margin: 0 auto;
+            padding: 20px;
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            text-align: center;
+            color: #0056b3;
+        }
+
+        .details-section {
+            margin-bottom: 20px;
+        }
+
+        .details-section h2 {
+            background: #0056b3;
+            color: #fff;
+            padding: 10px;
+            border-radius: 5px;
+            margin: 0 0 10px;
+        }
+
+        .details-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+
+        .details-table th, .details-table td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
+        }
+
+        .details-table th {
+            background-color: #0056b3;
+            color: #fff;
+        }
+
+        .details-table tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        .details-table tr:hover {
+            background-color: #f1f1f1;
+        }
+
+        .back-link {
+            display: block;
+            text-align: center;
+            padding: 10px;
+            font-size: 16px;
+            color: #0056b3;
+            text-decoration: none;
+        }
+
+        .back-link:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>Company Details</h1>
+
+        <!-- Company Details Section -->
+        <section class="details-section">
+            <h2>Company Information</h2>
+            <table class="details-table">
+                <tr>
+                    <th>Field</th>
+                    <th>Value</th>
+                </tr>
+                <tr>
+                    <td>Name</td>
+                    <td>{{ company_obj.name }}</td>
+                </tr>
+                <tr>
+                    <td>CIN</td>
+                    <td>{{ company_obj.cin }}</td>
+                </tr>
+                <tr>
+                    <td>Incorporation Date</td>
+                    <td>{{ company_obj.incorporation_date }}</td>
+                </tr>
+                <tr>
+                    <td>Registration Number</td>
+                    <td>{{ company_obj.registration_number }}</td>
+                </tr>
+                <tr>
+                    <td>Registered Address</td>
+                    <td>{{ company_obj.registered_address }}</td>
+                </tr>
+                <tr>
+                    <td>Balance Sheet Date</td>
+                    <td>{{ company_obj.balance_sheet_date }}</td>
+                </tr>
+                <tr>
+                    <td>Category</td>
+                    <td>{{ company_obj.category }}</td>
+                </tr>
+                <tr>
+                    <td>Sub-Category</td>
+                    <td>{{ company_obj.sub_category }}</td>
+                </tr>
+                <tr>
+                    <td>Company Class</td>
+                    <td>{{ company_obj.company_class }}</td>
+                </tr>
+                <tr>
+                    <td>Company Type</td>
+                    <td>{{ company_obj.company_type }}</td>
+                </tr>
+                <tr>
+                    <td>Paid Up Capital</td>
+                    <td>{{ company_obj.paid_up_capital }}</td>
+                </tr>
+                <tr>
+                    <td>Authorized Capital</td>
+                    <td>{{ company_obj.authorised_capital }}</td>
+                </tr>
+                <tr>
+                    <td>Status</td>
+                    <td>{{ company_obj.status }}</td>
+                </tr>
+                <tr>
+                    <td>ROC Office</td>
+                    <td>{{ company_obj.roc_office }}</td>
+                </tr>
+                <tr>
+                    <td>Country of Incorporation</td>
+                    <td>{{ company_obj.country_of_incorporation }}</td>
+                </tr>
+                <tr>
+                    <td>Description of Main Division</td>
+                    <td>{{ company_obj.description_of_main_division }}</td>
+                </tr>
+                <tr>
+                    <td>Email ID</td>
+                    <td>{{ company_obj.email_id }}</td>
+                </tr>
+                <tr>
+                    <td>Address Other Than Registered Office</td>
+                    <td>{{ company_obj.address_other_than_registered_office }}</td>
+                </tr>
+                <tr>
+                    <td>Number of Members</td>
+                    <td>{{ company_obj.number_of_members }}</td>
+                </tr>
+                <tr>
+                    <td>Active Compliance</td>
+                    <td>{{ company_obj.active_compliance }}</td>
+                </tr>
+                <tr>
+                    <td>Suspended at Stock Exchange</td>
+                    <td>{{ company_obj.suspended_at_stock_exchange }}</td>
+                </tr>
+                <tr>
+                    <td>Nature of Business</td>
+                    <td>{{ company_obj.nature_of_business }}</td>
+                </tr>
+                <tr>
+                    <td>Status for E-filing</td>
+                    <td>{{ company_obj.status_for_efiling }}</td>
+                </tr>
+                <tr>
+                    <td>Status under CIRP</td>
+                    <td>{{ company_obj.status_under_cirp }}</td>
+                </tr>
+                <tr>
+                    <td>PAN</td>
+                    <td>{{ company_obj.pan }}</td>
+                </tr>
+            </table>
+        </section>
+
+        <!-- Director Details Section -->
+        <section class="details-section">
+            <h2>Director Details</h2>
+            <table class="details-table">
+                <tr>
+                    <th>Name</th>
+                    <th>DIN</th>
+                    <th>Designation</th>
+                    <th>Date of Appointment</th>
+                    <th>Address</th>
+                    <th>PAN</th>
+                    <th>Father's Name</th>
+                    <th>Date of Birth</th>
+                    <th>Split Address</th>
+                    <th>Actions</th>
+                </tr>
+                {% for director in director_data_objects %}
+                <tr>
+                    <td>{{ director.name }}</td>
+                    <td>{{ director.din }}</td>
+                    <td>{{ director.designation }}</td>
+                    <td>{{ director.date_of_appointment }}</td>
+                    <td>{{ director.address }}</td>
+                    <td>{{ director.pan }}</td>
+                    <td>{{ director.father_name }}</td>
+                    <td>{{ director.dob }}</td>
+                    <td>{{ director.split_address }}</td>
+                    <td>
+                        <button onclick="fetchGstTurnover('{{ director.pan }}')">Show GST Turnover</button>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="10">No directors found.</td>
+                </tr>
+                {% endfor %}
+            </table>
+        </section>
+
+        <!-- GST Turnover Data Section -->
+        <section class="details-section">
+            <h2>GST Turnover Data</h2>
+            <table class="details-table" id="gst-data-table">
+                <tr>
+                    <th>GST No</th>
+                    <th>Year</th>
+                    <th>GST Estimated Total</th>
+                    <th>GST Filed Total</th>
+                    <th>PAN Estimated Total</th>
+                    <th>PAN Filed Total</th>
+                    <th>GST Status</th>
+                    <th>Legal Name</th>
+                    <th>Trade Name</th>
+                    <th>Register Date</th>
+                    <th>Tax Payer Type</th>
+                    <th>Authorized Signatory</th>
+                    <th>Business Nature</th>
+                </tr>
+                {% for gst in gst_data_objects %}
+                <tr>
+                    <td>{{ gst.gst_no }}</td>
+                    <td>{{ gst.year }}</td>
+                    <td>{{ gst.gst_estimated_total }}</td>
+                    <td>{{ gst.gst_filed_total }}</td>
+                    <td>{{ gst.pan_estimated_total }}</td>
+                    <td>{{ gst.pan_filed_total }}</td>
+                    <td>{{ gst.gst_status }}</td>
+                    <td>{{ gst.legal_name }}</td>
+                    <td>{{ gst.trade_name }}</td>
+                    <td>{{ gst.register_date }}</td>
+                    <td>{{ gst.tax_payer_type }}</td>
+                    <td>{{ gst.authorized_signatory }}</td>
+                    <td>{{ gst.business_nature }}</td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="13">No GST turnover data found.</td>
+                </tr>
+                {% endfor %}
+            </table>
+        </section>
+        <div id="loading-indicator" style="display: none; text-align: center; padding: 10px;">
+            Loading...
+        </div>
+        <!-- JavaScript to handle button click and fetch GST Turnover -->
+        <script>
+            async function fetchGstTurnover(pan) {
+                const loadingIndicator = document.getElementById('loading-indicator');
+                loadingIndicator.style.display = 'block'; // Show loading indicator
+            
+                try {
+                    const response = await fetch('fetch-gst-turnover/', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRFToken': '{{ csrf_token }}'
+                        },
+                        body: JSON.stringify({ pan: pan })
+                    });
+                    const data = await response.json();
+                    if (data.success) {
+                        alert('GST turnover data fetched and saved successfully.');
+                        addGstDataRow(data.gst_data);
+                    } else {
+                        alert('Failed to fetch GST turnover data.');
+                    }
+                } catch (error) {
+                    console.error('Error fetching GST turnover:', error);
+                    alert('An error occurred while fetching GST turnover data.');
+                } finally {
+                    loadingIndicator.style.display = 'none'; // Hide loading indicator
+                }
+            }
+
+            function addGstDataRow(gstData) {
+                const gstTable = document.getElementById('gst-data-table');
+                const row = gstTable.insertRow(-1);
+
+                row.insertCell(0).textContent = gstData.gst_no;
+                row.insertCell(1).textContent = gstData.year;
+                row.insertCell(2).textContent = gstData.gst_estimated_total;
+                row.insertCell(3).textContent = gstData.gst_filed_total;
+                row.insertCell(4).textContent = gstData.pan_estimated_total;
+                row.insertCell(5).textContent = gstData.pan_filed_total;
+                row.insertCell(6).textContent = gstData.gst_status;
+                row.insertCell(7).textContent = gstData.legal_name;
+                row.insertCell(8).textContent = gstData.trade_name;
+                row.insertCell(9).textContent = gstData.register_date;
+                row.insertCell(10).textContent = gstData.tax_payer_type;
+                row.insertCell(11).textContent = gstData.authorized_signatory;
+                row.insertCell(12).textContent = gstData.business_nature;
+            }
+        </script>
+
+    </div>
+</body>
+</html>
