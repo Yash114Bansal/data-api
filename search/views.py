@@ -129,6 +129,7 @@ class DirectorService:
             'dob': director.get('dob'),
             'split_address': " ".join(director.get('splitAddress', []))
         }
+        director_defaults = {key: value for key, value in director_defaults.items() if value != ""}
         try:
             director_obj, created = Director.objects.update_or_create(
                 din=director['din'],
