@@ -34,12 +34,19 @@ class APIService:
         response = APIService.fetch_json(url, data)
         return response.get('result', {}).get('pan')
 
+    # @staticmethod
+    # def fetch_gst_info(pan):
+    #     url = 'https://pan-all-in-one.befisc.com/'
+    #     data = {"pan": pan}
+    #     response = APIService.fetch_json(url, data)
+    #     return response['result'].get('is_director', {}).get('info', [])
+
     @staticmethod
     def fetch_gst_info(pan):
         url = 'https://pan-all-in-one.befisc.com/'
         data = {"pan": pan}
         response = APIService.fetch_json(url, data)
-        return response['result'].get('is_director', {}).get('info', [])
+        return response['result']
 
     @staticmethod
     def fetch_gst_turnover(gst_no):
@@ -68,6 +75,15 @@ class APIService:
         }
         response = APIService.fetch_json(url, data)
         return response['result']
+
+    @staticmethod
+    def fetch_company_name_from_gst(gst):
+        url = "https://gst-verification-basic.befisc.com/"
+        data = {
+            "gst_number": gst
+        }
+        response = APIService.fetch_json(url, data)
+        return response['result'].get("legal_name_of_business")
 
 class CompanyService:
     @staticmethod
@@ -150,12 +166,11 @@ class DirectorService:
 
 class GSTService:
     @staticmethod
-    def create_gst_data(director_obj, gst_data):
+    def create_gst_data(gst_data):
         try:
             gst_data_obj = GSTData.objects.get(gst_no=gst_data.get('gst_no'))
         except GSTData.DoesNotExist:
             gst_data_obj, created = GSTData.objects.get_or_create(
-                director=director_obj,
                 defaults={
                     'gst_no': gst_data.get('gst_no'),
                     'year': gst_data.get('year'),
@@ -170,6 +185,7 @@ class GSTService:
                     'tax_payer_type': gst_data.get('tax_payer_type'),
                     'authorized_signatory': gst_data.get('authorized_signatory'),
                     'business_nature': gst_data.get('business_nature'),
+                    'company_name': gst_data.get('company_name'),
                 }
             )
         return gst_data_obj
@@ -203,6 +219,20 @@ def search_company(request):
                     if director_obj and director_obj not in director_data_objects:
                         director_data_objects.append(director_obj)
 
+                        if director_obj.pan:
+                            additional_info = APIService.fetch_gst_info(director_obj.pan)
+                            if additional_info.get("masked_aadhaar"):
+                                director_obj.masked_aadhaar = additional_info.get("masked_aadhaar")
+                            if additional_info.get("phone_number"):
+                                director_obj.phone_number = additional_info.get("phone_number")
+                            if additional_info.get("din_info").get("company_list"):
+                                director_obj.company_list = additional_info.get("din_info").get("company_list")
+                            if additional_info.get("is_director").get("info"):
+                                director_obj.other_director_info = additional_info.get("is_director").get("info")
+                            if additional_info.get("is_sole_proprietor"):
+                                director_obj.is_sole_proprietor = additional_info.get("is_sole_proprietor").get("found")
+                            director_obj.save()
+
                 context = {
                     'company_obj': company_obj,
                     'director_data_objects': director_data_objects,
@@ -222,41 +252,73 @@ def search_company(request):
 def fetch_gst_turnover(request):
     if request.method == 'POST':
         data = json.loads(request.body)
-        pan = data.get('pan')
 
-        if pan:
-            director_obj = DirectorService.get_director(pan)
-            if director_obj:
-                gst_data_obj = GSTData.objects.filter(director=director_obj).first()
-                if gst_data_obj:
-                    return JsonResponse({'success': True, "gst_data": gst_data_obj})
+        company_name = data.get("company_name")
+        data = data.get("data")
+        print(data)
+        output = json.loads(data.replace("'",'"'))
+        
+        gst_list = [item.get("gst") for item in output if item.get("gst")]
+        print(gst_list)
+        if gst_list:
+            
+            if len(gst_list) == 1:
+                gst = gst_list[0]
+            else:
+                # Check Which GST is Of same name of company
+                for gst_number in gst_list:
+                    name = APIService.fetch_company_name_from_gst(gst_number)
+                    if name == company_name:
+                        gst = gst_number
+                        break
+                else:
+                    return JsonResponse({'success': False})
 
-                try:
-                    gst_data_list = APIService.fetch_gst_info(pan)
-                    if gst_data_list:
-                        gst_no = gst_data_list[0].get('gst')
-                        if gst_no:
-                            gst_turnover_data = APIService.fetch_gst_turnover(gst_no)
+            gst_data_obj = GSTData.objects.filter(gst_no=gst).first()
+            if gst_data_obj:
 
-                            gst_data = {
-                                'gst_no': gst_no,
-                                'year': "2021-22",
-                                'gst_estimated_total': gst_turnover_data.get('gst_estimated_total'),
-                                'gst_filed_total': gst_turnover_data.get('gst_filed_total'),
-                                'pan_estimated_total': gst_turnover_data.get('pan_estimated_total'),
-                                'pan_filed_total': gst_turnover_data.get('pan_filed_total'),
-                                'gst_status': gst_turnover_data.get('gst_status'),
-                                'legal_name': gst_turnover_data.get('legal_name'),
-                                'trade_name': gst_turnover_data.get('trade_name'),
-                                'register_date': gst_turnover_data.get('register_date'),
-                                'tax_payer_type': gst_turnover_data.get('tax_payer_type'),
-                                'authorized_signatory': " ".join(gst_turnover_data.get('authorized_signatory')),
-                                'business_nature': " ".join(gst_turnover_data.get('business_nature')),
-                            }
-                            GSTService.create_gst_data(director_obj, gst_data)
-                            return JsonResponse({'success': True, "gst_data": gst_data})
-                except Exception as e:
-                    print(f"Error fetching GST turnover: {e}")
+                gst_data = {
+                    'gst_no': gst,
+                    'year': "2021-22",
+                    'gst_estimated_total': gst_data_obj.gst_estimated_total,
+                    'gst_filed_total': gst_data_obj.gst_filed_total,
+                    'pan_estimated_total': gst_data_obj.pan_estimated_total,
+                    'pan_filed_total': gst_data_obj.pan_filed_total,
+                    'gst_status': gst_data_obj.gst_status,
+                    'legal_name': gst_data_obj.legal_name,
+                    'trade_name': gst_data_obj.trade_name,
+                    'register_date': gst_data_obj.register_date,
+                    'tax_payer_type': gst_data_obj.tax_payer_type,
+                    'authorized_signatory': " ".join(gst_data_obj.authorized_signatory if isinstance(gst_data_obj.authorized_signatory, list) else [gst_data_obj.authorized_signatory]),
+                    'business_nature': " ".join(gst_data_obj.business_nature if isinstance(gst_data_obj.business_nature, list) else [gst_data_obj.business_nature]),
+                    'company_name': company_name  # make sure to define or get company_name
+                }
 
-        return JsonResponse({'success': False})
+                return JsonResponse({'success': True, 'gst_data': gst_data})
+            try:
+                    if gst:
+                        gst_turnover_data = APIService.fetch_gst_turnover(gst)
+
+                        gst_data = {
+                            'gst_no': gst,
+                            'year': "2021-22",
+                            'gst_estimated_total': gst_turnover_data.get('gst_estimated_total'),
+                            'gst_filed_total': gst_turnover_data.get('gst_filed_total'),
+                            'pan_estimated_total': gst_turnover_data.get('pan_estimated_total'),
+                            'pan_filed_total': gst_turnover_data.get('pan_filed_total'),
+                            'gst_status': gst_turnover_data.get('gst_status'),
+                            'legal_name': gst_turnover_data.get('legal_name'),
+                            'trade_name': gst_turnover_data.get('trade_name'),
+                            'register_date': gst_turnover_data.get('register_date'),
+                            'tax_payer_type': gst_turnover_data.get('tax_payer_type'),
+                            'authorized_signatory': " ".join(gst_turnover_data.get('authorized_signatory')),
+                            'business_nature': " ".join(gst_turnover_data.get('business_nature')),
+                            'company_name':company_name
+                        }
+                        GSTService.create_gst_data(gst_data)
+                        return JsonResponse({'success': True, "gst_data": gst_data})
+            except Exception as e:
+                print(f"Error fetching GST turnover: {e}")
+
     return JsonResponse({'success': False})
+

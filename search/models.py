@@ -42,14 +42,22 @@ class Director(models.Model):
     no_of_companies = models.IntegerField(default=0, blank=True, null=True)
     father_name = models.CharField(max_length=255, blank=True, null=True)
     dob = models.CharField(max_length=50, blank=True, null=True)
+    masked_aadhaar = models.CharField(max_length=50, blank=True, null=True)
+    phone_number = models.CharField(max_length=15, blank=True, null=True)
+    company_list = models.JSONField(blank=True, null=True)
+
+    other_director_info = models.JSONField(blank=True, null=True) # Contains GST Numbers
+    is_sole_proprietor = models.CharField(max_length=15, blank=True, null=True)
+
+
     split_address = models.CharField(max_length=1000, blank=True, null=True)
+
 
     def __str__(self) -> str:
         return f"{self.name} || {self.company.name} || {self.din}"
 
 
 class GSTData(models.Model):
-    director = models.ForeignKey(Director, related_name='gst_data', on_delete=models.CASCADE)
     gst_no = models.CharField(max_length=50, unique=True, blank=True, null=True)
     year = models.CharField(max_length=50, blank=True, null=True)
     gst_estimated_total = models.CharField(max_length=255, blank=True, null=True)
@@ -63,6 +71,7 @@ class GSTData(models.Model):
     tax_payer_type = models.CharField(max_length=50, blank=True, null=True)
     authorized_signatory = models.CharField(max_length=1000, blank=True, null=True)
     business_nature = models.CharField(max_length=1000, blank=True, null=True)
+    company_name = models.CharField(max_length=1000, blank=True, null=True)
 
     def __str__(self) -> str:
-        return f"{self.gst_no} || {self.director.company.name}"
+        return f"{self.gst_no} || {self.company_name}"

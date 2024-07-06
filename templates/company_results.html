@@ -5,77 +5,146 @@
     <style>
         /* styles.css */
 
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f9;
-            color: #333;
-            margin: 0;
-            padding: 0;
-        }
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f9;
+    color: #333;
+    margin: 0;
+    padding: 0;
+}
 
-        .container {
-            width: 80%;
-            margin: 0 auto;
-            padding: 20px;
-            background: #fff;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        }
+.container {
+    width: 80%;
+    margin: 0 auto;
+    padding: 20px;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
 
-        h1 {
-            text-align: center;
-            color: #0056b3;
-        }
+h1 {
+    text-align: center;
+    color: #0056b3;
+}
 
-        .details-section {
-            margin-bottom: 20px;
-        }
+.details-section {
+    margin-bottom: 20px;
+}
 
-        .details-section h2 {
-            background: #0056b3;
-            color: #fff;
-            padding: 10px;
-            border-radius: 5px;
-            margin: 0 0 10px;
-        }
+.details-section h2 {
+    background: #0056b3;
+    color: #fff;
+    padding: 10px;
+    border-radius: 5px;
+    margin: 0 0 10px;
+}
 
-        .details-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 20px;
-        }
+.details-table, .vertical-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+}
 
-        .details-table th, .details-table td {
-            border: 1px solid #ddd;
-            padding: 10px;
-            text-align: left;
-        }
+.details-table th, .details-table td, .vertical-table th, .vertical-table td {
+    border: 1px solid #ddd;
+    padding: 10px;
+    text-align: left;
+}
 
-        .details-table th {
-            background-color: #0056b3;
-            color: #fff;
-        }
+.details-table th, .vertical-table th {
+    background-color: #0056b3;
+    color: #fff;
+}
 
-        .details-table tr:nth-child(even) {
-            background-color: #f9f9f9;
-        }
+.details-table tr:nth-child(even), .vertical-table tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
 
-        .details-table tr:hover {
-            background-color: #f1f1f1;
-        }
+.details-table tr:hover, .vertical-table tr:hover {
+    background-color: #f1f1f1;
+}
 
-        .back-link {
-            display: block;
-            text-align: center;
-            padding: 10px;
-            font-size: 16px;
-            color: #0056b3;
-            text-decoration: none;
-        }
+/* Director-specific styles */
+.director-table-container {
+    margin-bottom: 30px;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background: #fff;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+}
 
-        .back-link:hover {
-            text-decoration: underline;
-        }
+.director-table-container h3 {
+    margin-top: 0;
+    color: #0056b3;
+}
+
+.vertical-table th, .vertical-table td {
+    border: 1px solid #ddd;
+    padding: 10px;
+    text-align: left;
+}
+
+.vertical-table th {
+    background-color: #0056b3;
+    color: #fff;
+}
+
+.company-list-container {
+    margin-top: 10px; /* Add spacing between the main table and the company list */
+}
+
+.company-list-item {
+    border-bottom: 1px solid #ddd;
+    padding: 5px 0;
+}
+
+.company-list-item:last-child {
+    border-bottom: none; /* Remove bottom border for the last item */
+}
+
+.actions {
+    text-align: center;
+    margin-top: 10px;
+}
+
+.actions button {
+    padding: 10px 15px;
+    font-size: 16px;
+    color: #fff;
+    background-color: #0056b3;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.actions button:hover {
+    background-color: #003d80;
+}
+
+.actions button:disabled {
+    background-color: #6c757d; 
+    cursor: not-allowed; 
+}
+
+.actions button:disabled:hover {
+    background-color: #6c757d; /* Maintain the same color when disabled */
+    text-decoration: none; /* Remove underline or other text decorations */
+}
+
+.back-link {
+    display: block;
+    text-align: center;
+    padding: 10px;
+    font-size: 16px;
+    color: #0056b3;
+    text-decoration: none;
+}
+
+.back-link:hover {
+    text-decoration: underline;
+}
+
     </style>
 </head>
 
@@ -193,45 +262,111 @@
                 </tr>
             </table>
         </section>
-
         <!-- Director Details Section -->
         <section class="details-section">
             <h2>Director Details</h2>
-            <table class="details-table">
-                <tr>
-                    <th>Name</th>
-                    <th>DIN</th>
-                    <th>Designation</th>
-                    <th>Date of Appointment</th>
-                    <th>Address</th>
-                    <th>PAN</th>
-                    <th>Father's Name</th>
-                    <th>Date of Birth</th>
-                    <th>Split Address</th>
-                    <th>Actions</th>
-                </tr>
-                {% for director in director_data_objects %}
-                <tr>
-                    <td>{{ director.name }}</td>
-                    <td>{{ director.din }}</td>
-                    <td>{{ director.designation }}</td>
-                    <td>{{ director.date_of_appointment }}</td>
-                    <td>{{ director.address }}</td>
-                    <td>{{ director.pan }}</td>
-                    <td>{{ director.father_name }}</td>
-                    <td>{{ director.dob }}</td>
-                    <td>{{ director.split_address }}</td>
-                    <td>
-                        <button onclick="fetchGstTurnover('{{ director.pan }}')">Show GST Turnover</button>
-                    </td>
-                </tr>
-                {% empty %}
-                <tr>
-                    <td colspan="10">No directors found.</td>
-                </tr>
-                {% endfor %}
-            </table>
+            {% for director in director_data_objects %}
+            <div class="director-table-container">
+                <h3>Director: {{ director.name }}</h3>
+                <table class="vertical-table">
+                    <tr>
+                        <th>Field</th>
+                        <th>Value</th>
+                    </tr>
+                    <tr>
+                        <td>Name</td>
+                        <td>{{ director.name }}</td>
+                    </tr>
+                    <tr>
+                        <td>DIN</td>
+                        <td>{{ director.din }}</td>
+                    </tr>
+                    <tr>
+                        <td>Designation</td>
+                        <td>{{ director.designation }}</td>
+                    </tr>
+                    <tr>
+                        <td>Date of Appointment</td>
+                        <td>{{ director.date_of_appointment }}</td>
+                    </tr>
+                    <tr>
+                        <td>Address</td>
+                        <td>{{ director.address }}</td>
+                    </tr>
+                    <tr>
+                        <td>PAN</td>
+                        <td>{{ director.pan }}</td>
+                    </tr>
+                    <tr>
+                        <td>Father's Name</td>
+                        <td>{{ director.father_name }}</td>
+                    </tr>
+                    <tr>
+                        <td>Date of Birth</td>
+                        <td>{{ director.dob }}</td>
+                    </tr>
+                    <tr>
+                        <td>Masked Aadhaar</td>
+                        <td>{{ director.masked_aadhaar }}</td>
+                    </tr>
+                    <tr>
+                        <td>Phone Number</td>
+                        <td>{{ director.phone_number }}</td>
+                    </tr>
+                    <tr>
+                        <td>Is Sole Proprietor</td>
+                        <td>{{ director.is_sole_proprietor }}</td>
+                    </tr>
+                    <tr>
+                        <td>Company List</td>
+                        <td>
+                            {% if director.company_list %}
+                            <div class="company-list-container">
+                                {% for company in director.company_list %}
+                                <div class="company-list-item">
+                                    <strong>CIN:</strong> {{ company.cin }} <br>
+                                    <strong>Company Name:</strong> {{ company.company_name }} <br>
+                                </div>
+                                {% endfor %}
+                            </div>
+                            {% else %}
+                            No companies listed.
+                            {% endif %}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Other GST Info</td>
+                        <td>
+                            {% if director.other_director_info %}
+                            <input type="hidden" id="director_info" name="director_info" value="{{ director.other_director_info|escape }}" />
+                            <div class="company-list-container">
+                                {% for info in director.other_director_info %}
+                                <div class="company-list-item">
+                                    <strong>GST:</strong> {{ info.gst }} <br>
+                                    <strong>Aggregate TurnOver:</strong> {{ info.aggregate_turn_over }} <br>
+                                    <strong>Status:</strong> {{ info.status }} <br>
+                                </div>
+                                {% endfor %}
+                            </div>
+                            {% else %}
+                            No companies listed.
+                            {% endif %}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Split Address</td>
+                        <td>{{ director.split_address }}</td>
+                    </tr>
+                </table>
+            </div>
+            {% empty %}
+            <p>No directors found.</p>
+            {% endfor %}
+            <div class="actions">
+                <button onclick="fetchGstTurnover('{{company_obj.name}}')" id="fetch-button">Show GST Turnover</button>
+            </div>
         </section>
+
 
         <!-- GST Turnover Data Section -->
         <section class="details-section">
@@ -269,7 +404,7 @@
                     <td>{{ gst.business_nature }}</td>
                 </tr>
                 {% empty %}
-                <tr>
+                <tr id="no_gst_data">
                     <td colspan="13">No GST turnover data found.</td>
                 </tr>
                 {% endfor %}
@@ -280,10 +415,10 @@
         </div>
         <!-- JavaScript to handle button click and fetch GST Turnover -->
         <script>
-            async function fetchGstTurnover(pan) {
+            async function fetchGstTurnover(company_name) {
                 const loadingIndicator = document.getElementById('loading-indicator');
                 loadingIndicator.style.display = 'block'; // Show loading indicator
-            
+                let gst_list = document.getElementById("director_info").value
                 try {
                     const response = await fetch('fetch-gst-turnover/', {
                         method: 'POST',
@@ -291,11 +426,22 @@
                             'Content-Type': 'application/json',
                             'X-CSRFToken': '{{ csrf_token }}'
                         },
-                        body: JSON.stringify({ pan: pan })
+                        body: JSON.stringify({"data" :gst_list,"company_name":company_name})
                     });
                     const data = await response.json();
                     if (data.success) {
+
                         alert('GST turnover data fetched and saved successfully.');
+                        const noDataRow = document.getElementById('no_gst_data');
+                        if (noDataRow) {
+                            noDataRow.remove();
+                        }
+
+                        // Disable the button
+                        const fetchButton = document.getElementById('fetch-button');
+                        if (fetchButton) {
+                            fetchButton.disabled = true;
+                        }
                         addGstDataRow(data.gst_data);
                     } else {
                         alert('Failed to fetch GST turnover data.');
