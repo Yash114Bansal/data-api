@@ -69,6 +69,7 @@ class APIService:
             "year": year
         }
         response = APIService.fetch_json(url, data)
+        print(response)
         try:
             return response['result']
         except:
@@ -256,10 +257,12 @@ def search_company(request):
                                 director_obj.masked_aadhaar = additional_info.get("masked_aadhaar")
                             if additional_info.get("phone_number"):
                                 director_obj.phone_number = additional_info.get("phone_number")
-                            if additional_info.get("din_info").get("company_list"):
-                                director_obj.company_list = additional_info.get("din_info").get("company_list")
-                            if additional_info.get("is_director").get("info"):
-                                director_obj.other_director_info = additional_info.get("is_director").get("info")
+                            if additional_info.get("din_info"):
+                                if additional_info.get("din_info").get("company_list"):
+                                    director_obj.company_list = additional_info.get("din_info").get("company_list")
+                            if additional_info.get("is_director"):
+                                if additional_info.get("is_director").get("info"):
+                                    director_obj.other_director_info = additional_info.get("is_director").get("info")
                             if additional_info.get("is_sole_proprietor"):
                                 director_obj.is_sole_proprietor = additional_info.get("is_sole_proprietor").get("found")
                             director_obj.save()
@@ -313,6 +316,8 @@ def format_academic_year(year):
 
 @csrf_exempt
 def fetch_gst_turnover(request):
+    return JsonResponse({'success': False})
+
     # TODO if company gst is found from directs use it
     if request.method == 'POST':
         data = json.loads(request.body)
@@ -323,6 +328,7 @@ def fetch_gst_turnover(request):
         output = json.loads(data.replace("'",'"'))
         
         gst_list = [item.get("gst") for item in output if item.get("gst")]
+        print("GST LIST IS", gst_list)
         if gst_list:
             
             if len(gst_list) == 1:
@@ -331,6 +337,7 @@ def fetch_gst_turnover(request):
                 # Check Which GST is Of same name of company
                 for gst_number in gst_list:
                     name = APIService.fetch_company_name_from_gst(gst_number)
+                    print(name, company_name    )
                     if name == company_name:
                         gst = gst_number
     
@@ -367,7 +374,7 @@ def fetch_gst_turnover(request):
                     current_year = datetime.now().year
 
                     gst_data_list = []
-
+                    
                     for year in range(start_year, current_year):
                         formatted_year = format_academic_year(year)
                         print(formatted_year)
