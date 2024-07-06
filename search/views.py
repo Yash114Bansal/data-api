@@ -34,6 +34,18 @@ class APIService:
         }
         response = APIService.fetch_json(url, data)
         return response.get('result', {}).get('pan')
+    
+    @staticmethod
+    def fetch_company_name_from_pan(pan):
+        url = 'https://pan-verification-basic.befisc.com/'
+        data = {
+            "pan": pan
+        }
+        response = APIService.fetch_json(url, data)
+        user_full_name =  response.get('result', {}).get('user_full_name')
+        if user_full_name:
+            return user_full_name.strip()
+        return None
 
     # @staticmethod
     # def fetch_gst_info(pan):
@@ -252,6 +264,33 @@ def search_company(request):
                                 director_obj.is_sole_proprietor = additional_info.get("is_sole_proprietor").get("found")
                             director_obj.save()
 
+                # Now from directors gst, find PAN of company
+            
+                # Finding common gst of all director
+                directors = Director.objects.filter(company=company_obj)
+                gst_sets = []
+
+                # Extract GST numbers from each director's other_director_info
+                for director in directors:
+                    gst_numbers = {info.get('gst') for info in director.other_director_info or [] if info.get('gst')}
+                    gst_sets.append(gst_numbers)
+                print(gst_sets)
+                # Find common GST numbers using set intersection
+                if gst_sets:
+                    common_gsts = list(set.intersection(*gst_sets))
+                else:
+                    common_gsts = []
+                print(common_gsts)
+                for gst in common_gsts:
+                    pan = gst[2:-3]
+                    print(pan)
+                    c_name = APIService.fetch_company_name_from_pan(pan)
+                    print(c_name)
+                    if c_name.lower() == company_name.lower():
+                        company_obj.pan = pan
+                        company_obj.save()
+                        break
+
                 context = {
                     'company_obj': company_obj,
                     'director_data_objects': director_data_objects,
@@ -274,6 +313,7 @@ def format_academic_year(year):
 
 @csrf_exempt
 def fetch_gst_turnover(request):
+    # TODO if company gst is found from directs use it
     if request.method == 'POST':
         data = json.loads(request.body)
 
@@ -283,7 +323,6 @@ def fetch_gst_turnover(request):
         output = json.loads(data.replace("'",'"'))
         
         gst_list = [item.get("gst") for item in output if item.get("gst")]
-        print(gst_list)
         if gst_list:
             
             if len(gst_list) == 1:
@@ -336,7 +375,7 @@ def fetch_gst_turnover(request):
 
                         if gst_turnover_data is None:
                             continue
-                        
+
                         gst_data = {
                             'gst_no': gst,
                             'year': formatted_year,
