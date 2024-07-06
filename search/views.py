@@ -57,7 +57,10 @@ class APIService:
             "year": year
         }
         response = APIService.fetch_json(url, data)
-        return response['result']
+        try:
+            return response['result']
+        except:
+            return None
 
     @staticmethod
     def fetch_company_data(name):
@@ -134,11 +137,26 @@ class DirectorService:
         pan = director.get('pan')
         if not pan:
             pan = APIService.fetch_pan(director.get('din'))
+        try:
+            director_obj = Director.objects.get(din=director['din'], company=company_obj)
+            old_date_of_appointment_str = director_obj.date_of_appointment
+        except Director.DoesNotExist:
+            director_obj = None
+            old_date_of_appointment_str = None
+
+        new_date_of_appointment_str = director.get('dateOfAppointment')
+        new_date_of_appointment = datetime.strptime(new_date_of_appointment_str, "%m/%d/%Y").date() if new_date_of_appointment_str else None
+
+        if old_date_of_appointment_str:
+            date_of_appointment_to_use = old_date_of_appointment_str
+        else:
+            date_of_appointment_to_use = datetime.strftime(new_date_of_appointment, "%m/%d/%Y") if new_date_of_appointment else None
+
 
         director_defaults = {
             'name': director.get('name'),
             'designation': director.get('designation'),
-            'date_of_appointment': director.get('dateOfAppointment'),
+            'date_of_appointment': date_of_appointment_to_use,
             'address': director.get('address'),
             'pan': pan,
             'no_of_companies': director.get('noOfCompanies', 0),
@@ -170,9 +188,8 @@ class GSTService:
     def create_gst_data(gst_data):
         try:
             gst_data_obj = GSTData.objects.get(gst_no=gst_data.get('gst_no'), year=gst_data.get('year'))
-            print("GOOOOOOOOOT")
         except GSTData.DoesNotExist:
-            print("CREATEEEEEEEEEE")
+
             gst_data_obj= GSTData.objects.create(
                     gst_no= gst_data.get('gst_no'),
                     year= gst_data.get('year'),
@@ -277,6 +294,7 @@ def fetch_gst_turnover(request):
                     name = APIService.fetch_company_name_from_gst(gst_number)
                     if name == company_name:
                         gst = gst_number
+    
                         break
                 else:
                     return JsonResponse({'success': False})
@@ -287,7 +305,7 @@ def fetch_gst_turnover(request):
                 for gst_data_obj in gst_data_objs:
                     gst_data = {
                         'gst_no': gst,
-                        'year': "2021-22",
+                        'year': gst_data_obj.year,
                         'gst_estimated_total': gst_data_obj.gst_estimated_total,
                         'gst_filed_total': gst_data_obj.gst_filed_total,
                         'pan_estimated_total': gst_data_obj.pan_estimated_total,
@@ -313,8 +331,12 @@ def fetch_gst_turnover(request):
 
                     for year in range(start_year, current_year):
                         formatted_year = format_academic_year(year)
+                        print(formatted_year)
                         gst_turnover_data = APIService.fetch_gst_turnover(gst, formatted_year)
 
+                        if gst_turnover_data is None:
+                            continue
+                        
                         gst_data = {
                             'gst_no': gst,
                             'year': formatted_year,
