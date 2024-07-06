@@ -58,7 +58,7 @@ class Director(models.Model):
 
 
 class GSTData(models.Model):
-    gst_no = models.CharField(max_length=50, unique=True, blank=True, null=True)
+    gst_no = models.CharField(max_length=50, blank=True, null=True)
     year = models.CharField(max_length=50, blank=True, null=True)
     gst_estimated_total = models.CharField(max_length=255, blank=True, null=True)
     gst_filed_total = models.CharField(max_length=255, blank=True, null=True)
@@ -73,5 +73,7 @@ class GSTData(models.Model):
     business_nature = models.CharField(max_length=1000, blank=True, null=True)
     company_name = models.CharField(max_length=1000, blank=True, null=True)
 
+    class Meta:
+        unique_together = ('gst_no', 'year')
     def __str__(self) -> str:
-        return f"{self.gst_no} || {self.company_name}"
+        return f"{self.gst_no} || {self.year} || {self.company_name} "

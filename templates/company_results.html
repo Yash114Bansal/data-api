@@ -363,7 +363,7 @@ h1 {
             <p>No directors found.</p>
             {% endfor %}
             <div class="actions">
-                <button onclick="fetchGstTurnover('{{company_obj.name}}')" id="fetch-button">Show GST Turnover</button>
+                <button onclick="fetchGstTurnover('{{company_obj.name}}', '{{company_obj.incorporation_date}}')" id="fetch-button">Show GST Turnover</button>
             </div>
         </section>
 
@@ -415,7 +415,7 @@ h1 {
         </div>
         <!-- JavaScript to handle button click and fetch GST Turnover -->
         <script>
-            async function fetchGstTurnover(company_name) {
+            async function fetchGstTurnover(company_name, incorporation_date) {
                 const loadingIndicator = document.getElementById('loading-indicator');
                 loadingIndicator.style.display = 'block'; // Show loading indicator
                 let gst_list = document.getElementById("director_info").value
@@ -426,9 +426,10 @@ h1 {
                             'Content-Type': 'application/json',
                             'X-CSRFToken': '{{ csrf_token }}'
                         },
-                        body: JSON.stringify({"data" :gst_list,"company_name":company_name})
+                        body: JSON.stringify({"data" :gst_list,"company_name":company_name, "incorporation_date":incorporation_date})
                     });
                     const data = await response.json();
+                    console.log(data)
                     if (data.success) {
 
                         alert('GST turnover data fetched and saved successfully.');
@@ -442,7 +443,9 @@ h1 {
                         if (fetchButton) {
                             fetchButton.disabled = true;
                         }
-                        addGstDataRow(data.gst_data);
+                        for (const gstData of data.gst_data){
+                            addGstDataRow(gstData);
+                        }
                     } else {
                         alert('Failed to fetch GST turnover data.');
                     }
