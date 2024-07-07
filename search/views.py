@@ -175,7 +175,7 @@ class DirectorService:
             'no_of_companies': director.get('noOfCompanies', 0),
             'father_name': director.get('fatherName'),
             'dob': director.get('dob'),
-            'split_address': " ".join(director.get('splitAddress', []))
+            'split_address': " ".join(director.get('splitAddress', {}).values())
         }
         director_defaults = {key: value for key, value in director_defaults.items() if value != ""}
         try:
