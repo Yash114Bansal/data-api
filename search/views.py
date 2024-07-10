@@ -54,6 +54,7 @@ class APIService:
     #     response = APIService.fetch_json(url, data)
     #     return response['result'].get('is_director', {}).get('info', [])
 
+
     @staticmethod
     def fetch_gst_info(pan):
         url = 'https://pan-all-in-one.befisc.com/'
@@ -157,19 +158,19 @@ class DirectorService:
             director_obj = None
             old_date_of_appointment_str = None
 
-        new_date_of_appointment_str = director.get('dateOfAppointment')
-        new_date_of_appointment = datetime.strptime(new_date_of_appointment_str, "%m/%d/%Y").date() if new_date_of_appointment_str else None
+        # new_date_of_appointment_str = director.get('dateOfAppointment')
+        # new_date_of_appointment = datetime.strptime(new_date_of_appointment_str, "%m/%d/%Y").date() if new_date_of_appointment_str else None
 
-        if old_date_of_appointment_str:
-            date_of_appointment_to_use = old_date_of_appointment_str
-        else:
-            date_of_appointment_to_use = datetime.strftime(new_date_of_appointment, "%m/%d/%Y") if new_date_of_appointment else None
+        # if old_date_of_appointment_str:
+        #     date_of_appointment_to_use = old_date_of_appointment_str
+        # else:
+        #     date_of_appointment_to_use = datetime.strftime(new_date_of_appointment, "%m/%d/%Y") if new_date_of_appointment else None
 
 
         director_defaults = {
             'name': director.get('name'),
             'designation': director.get('designation'),
-            'date_of_appointment': date_of_appointment_to_use,
+            'date_of_appointment': director.get('dateOfAppointment'),
             'address': director.get('address'),
             'pan': pan,
             'no_of_companies': director.get('noOfCompanies', 0),
@@ -316,7 +317,7 @@ def format_academic_year(year):
 
 @csrf_exempt
 def fetch_gst_turnover(request):
-    return JsonResponse({'success': False})
+    # return JsonResponse({'success': False})
 
     # TODO if company gst is found from directs use it
     if request.method == 'POST':
