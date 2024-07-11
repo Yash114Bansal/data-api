@@ -382,7 +382,7 @@ def fetch_gst_turnover(request):
                 return JsonResponse({'success': True, 'gst_data': gst_data_list})
             try:
                 if gst:
-                    start_year = datetime.strptime(incorporation_date, "%m/%d/%Y").year
+                    start_year = datetime.strptime(incorporation_date, "%d/%m/%Y").year
                     current_year = datetime.now().year
 
                     gst_data_list = []
