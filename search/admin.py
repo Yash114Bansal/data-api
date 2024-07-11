@@ -1,11 +1,18 @@
 from django.contrib import admin
 from .models import Company, Director, GSTData
 
+class DirectorInline(admin.StackedInline):
+    model = Director
+    extra = 1
+    fields = ('din', 'name', 'designation', 'date_of_appointment', 'address', 'pan', 'no_of_companies', 'father_name', 'dob', 'masked_aadhaar', 'phone_number', 'company_list', 'other_director_info', 'is_sole_proprietor', 'split_address')
+    readonly_fields = ('din', 'name')
+
 @admin.register(Company)
 class CompanyAdmin(admin.ModelAdmin):
     list_display = ('cin', 'name', 'incorporation_date', 'last_agm_date', 'status')
     search_fields = ('cin', 'name', 'status')
     list_filter = ('status', 'incorporation_date', 'last_agm_date')
+    inlines = [DirectorInline]
 
 @admin.register(Director)
 class DirectorAdmin(admin.ModelAdmin):
