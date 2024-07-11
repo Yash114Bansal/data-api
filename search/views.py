@@ -110,11 +110,11 @@ class CompanyService:
             cin=cin,
             defaults={
                 'name': company_info.get('companyName'),
-                'incorporation_date': company_info.get('dateOfIncorporation'),
-                'last_agm_date': company_info.get('lastAgmDate'),
+                'incorporation_date': convert_date_format(company_info.get('dateOfIncorporation')),
+                'last_agm_date': convert_date_format(company_info.get('lastAgmDate')),
                 'registration_number': company_info.get('registrationNumber'),
                 'registered_address': company_info.get('registeredAddress'),
-                'balance_sheet_date': company_info.get('balanceSheetDate'),
+                'balance_sheet_date': convert_date_format(company_info.get('balanceSheetDate')),
                 'category': company_info.get('category'),
                 'sub_category': company_info.get('subCategory'),
                 'company_class': company_info.get('class'),
@@ -175,7 +175,7 @@ class DirectorService:
             'pan': pan,
             'no_of_companies': director.get('noOfCompanies', 0),
             'father_name': director.get('fatherName'),
-            'dob': director.get('dob'),
+            'dob': convert_date_format(director.get('dob')),
             'split_address': " ".join(director.get('splitAddress', {}).values())
         }
         director_defaults = {key: value for key, value in director_defaults.items() if value != ""}
@@ -314,6 +314,17 @@ def search_company(request):
 def format_academic_year(year):
     next_year = (year + 1) % 100  # Get the last two digits of the next year
     return f"{year}-{next_year:02d}"
+
+def convert_date_format(date_str):
+    try:
+        # Parse the date string into a datetime object
+        date_obj = datetime.strptime(date_str, '%m/%d/%Y')
+        
+        # Format the date object into the new format
+        return date_obj.strftime('%d/%m/%Y')
+    except ValueError:
+        # If parsing fails, return the original date string
+        return date_str
 
 @csrf_exempt
 def fetch_gst_turnover(request):
