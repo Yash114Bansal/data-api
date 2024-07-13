@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.contrib.auth import get_user_model
-from .models import Company, Director, GSTData, Source, Startup
+from .models import Company, Director, GSTData, Source, Startup, SourceName
 
 User = get_user_model()
 
@@ -79,3 +79,4 @@ class GSTDataAdmin(admin.ModelAdmin):
     list_filter = ('year', 'gst_status')
 
 admin.site.register(Source)
+admin.site.register(SourceName)

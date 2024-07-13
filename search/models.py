@@ -9,6 +9,13 @@ class Source(models.Model):
 
     def __str__(self) -> str:
         return self.name
+    
+
+class SourceName(models.Model):
+    name = models.CharField(max_length=200, unique=True)
+
+    def __str__(self) -> str:
+        return self.name
 
 class Company(models.Model):
 
@@ -74,7 +81,7 @@ class Startup(models.Model):
     deal_owner = models.ManyToManyField(User, related_name='deal_companies', blank=True)
     last_edited_by = models.ForeignKey(User, related_name='edited_companies', on_delete=models.SET_NULL, blank=True, null=True)
     source = models.ForeignKey(Source, on_delete=models.SET_NULL, blank=True, null=True)
-    source_name = models.ForeignKey(Source,related_name='src_name' ,on_delete=models.SET_NULL, blank=True, null=True)
+    source_name = models.ForeignKey(SourceName,related_name='src_name' ,on_delete=models.SET_NULL, blank=True, null=True)
 
     # Fields for specific statuses
     in_review_comment = models.TextField(blank=True, null=True)
@@ -142,6 +149,8 @@ class Director(models.Model):
 
     def __str__(self) -> str:
         return f"{self.name} || {self.company.name} || {self.din}"
+    
+    
 
 
 class GSTData(models.Model):
