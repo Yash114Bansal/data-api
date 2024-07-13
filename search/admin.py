@@ -23,6 +23,11 @@ class CompanyAdmin(admin.ModelAdmin):
         'email_id', 'address_other_than_registered_office', 'number_of_members', 'active_compliance',
         'suspended_at_stock_exchange', 'nature_of_business', 'status_for_efiling', 'status_under_cirp', 'pan',
     )
+    def get_queryset(self, request):
+        queryset = super().get_queryset(request)
+        if not request.user.is_superuser:
+            queryset = queryset.filter(startup__deal_owner=request.user)
+        return queryset
 
     def save_model(self, request, obj, form, change):
         obj.last_edited_by = request.user
@@ -50,6 +55,12 @@ class StartupAdmin(admin.ModelAdmin):
         'in_review_date', 'pre_r1_stage_date', 'r1_date', 'r2_date', 'site_visit_date', 
         'rejected_date', 'last_edited_on', 'last_edited_by'
     )
+
+    def get_queryset(self, request):
+        queryset = super().get_queryset(request)
+        if not request.user.is_superuser:
+            queryset = queryset.filter(deal_owner=request.user)
+        return queryset
 
     def save_model(self, request, obj, form, change):
         obj.last_edited_by = request.user
