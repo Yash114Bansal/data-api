@@ -11,14 +11,7 @@ class Source(models.Model):
         return self.name
 
 class Company(models.Model):
-    STATUS_CHOICES = [
-        ('in_review', 'In-review'),
-        ('pre_r1_stage', 'Pre-R1 stage'),
-        ('r1', 'R1'),
-        ('r2', 'R2'),
-        ('site_visit', 'Site visit'),
-        ('rejected', 'Rejected'),
-    ]
+
     cin = models.CharField(max_length=50, unique=True)
     name = models.CharField(max_length=255, blank=True, null=True)
     incorporation_date = models.CharField(max_length=50, blank=True, null=True)
@@ -46,7 +39,29 @@ class Company(models.Model):
     status_under_cirp = models.CharField(max_length=50, blank=True, null=True)
     pan = models.CharField(max_length=50, blank=True, null=True)
 
+    class Meta:
+        verbose_name_plural = "Companies"
+
+    def __str__(self) -> str:
+        return f"{self.name} || {self.cin}"
+
+
+
+class Startup(models.Model):
     # New fields for specific statuses
+    STATUS_CHOICES = [
+        ('in_review', 'In-review'),
+        ('pre_r1_stage', 'Pre-R1 stage'),
+        ('r1', 'R1'),
+        ('r2', 'R2'),
+        ('site_visit', 'Site visit'),
+        ('rejected', 'Rejected'),
+    ]
+    legal_entity = models.OneToOneField(Company,on_delete=models.SET_NULL,blank=True, null=True)
+    name = models.CharField(max_length=200, null=True, blank=True)
+    mobile_number = models.CharField(max_length=15, null=True, blank=True)
+    founder_name = models.CharField(max_length=200, null=True, blank=True)
+    about = models.TextField(blank=True, null=True)
     current_status = models.CharField(max_length=50, choices=STATUS_CHOICES, blank=True, null=True)
     status_comment = models.TextField(blank=True, null=True)
     notes = models.TextField(blank=True, null=True)
@@ -83,12 +98,13 @@ class Company(models.Model):
     grants = models.DecimalField(max_digits=12, decimal_places=2, blank=True, null=True)
     video_url = models.URLField(max_length=200,blank=True, null=True)
     language = models.CharField(max_length=50, blank=True, null=True)
-    class Meta:
-        verbose_name_plural = "Companies"
-
-    def __str__(self) -> str:
-        return f"{self.name} || {self.cin}"
-
+    no_of_founders = models.IntegerField(blank=True, null=True)
+    team_size = models.IntegerField(blank=True, null=True)
+    city = models.CharField(max_length=100, blank=True, null=True)
+    state = models.CharField(max_length=100, blank=True, null=True)
+    founding_year = models.IntegerField(blank=True, null=True)
+    application_date = models.DateField(blank=True, null=True)
+    last_edited_on = models.DateTimeField(auto_now=True)
     def save(self, *args, **kwargs):
         status_date_mapping = {
             'in_review': 'in_review_date',

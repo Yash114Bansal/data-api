@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.contrib.auth import get_user_model
-from .models import Company, Director, GSTData, Source
+from .models import Company, Director, GSTData, Source, Startup
 
 User = get_user_model()
 
@@ -12,9 +12,9 @@ class DirectorInline(admin.StackedInline):
 
 @admin.register(Company)
 class CompanyAdmin(admin.ModelAdmin):
-    list_display = ('cin', 'name', 'incorporation_date', 'last_agm_date', 'status','current_status')
+    list_display = ('cin', 'name', 'incorporation_date', 'last_agm_date', 'status')
     search_fields = ('cin', 'name', 'status')
-    list_filter = ('status', 'incorporation_date', 'last_agm_date','current_status')
+    list_filter = ('status', 'incorporation_date', 'last_agm_date')
     inlines = [DirectorInline]
     fields = (
         'cin', 'name', 'incorporation_date', 'last_agm_date', 'registration_number', 'registered_address',
@@ -22,13 +22,33 @@ class CompanyAdmin(admin.ModelAdmin):
         'authorised_capital', 'status', 'roc_office', 'country_of_incorporation', 'description_of_main_division',
         'email_id', 'address_other_than_registered_office', 'number_of_members', 'active_compliance',
         'suspended_at_stock_exchange', 'nature_of_business', 'status_for_efiling', 'status_under_cirp', 'pan',
-        'current_status', 'status_comment', 'notes', 'additional_comments', 'attachment1', 'attachment2',
-        'attachment3', 'relevant_link1', 'relevant_link2', 'relevant_link3', 'deal_owner', 'last_edited_by',
-        'in_review_comment', 'pre_r1_stage_comment', 'r1_comment', 'r2_comment', 'site_visit_comment', 'rejected_comment',
-        'in_review_date', 'pre_r1_stage_date', 'r1_date', 'r2_date', 'site_visit_date', 'rejected_date','sector',
-        'twelve_m_revenue', 'equity', 'debt', 'grants', 'video_url','language','source'
     )
-    readonly_fields = ('in_review_date', 'pre_r1_stage_date', 'r1_date', 'r2_date', 'site_visit_date', 'rejected_date', 'last_edited_by')
+
+    def save_model(self, request, obj, form, change):
+        obj.last_edited_by = request.user
+        super().save_model(request, obj, form, change)
+
+@admin.register(Startup)
+class StartupAdmin(admin.ModelAdmin):
+    list_display = ('name', 'founder_name', 'sector', 'current_status', 'last_edited_on')
+    search_fields = ('name', 'founder_name', 'sector', 'current_status')
+    list_filter = ('current_status', 'sector', 'last_edited_on')
+
+    fields = (
+        'legal_entity', 'name', 'mobile_number', 'founder_name', 'about', 'current_status', 
+        'status_comment', 'notes', 'additional_comments', 'attachment1', 'attachment2',
+        'attachment3', 'relevant_link1', 'relevant_link2', 'relevant_link3', 'deal_owner', 
+        'last_edited_by', 'source', 'in_review_comment', 'pre_r1_stage_comment', 'r1_comment', 
+        'r2_comment', 'site_visit_comment', 'rejected_comment', 'in_review_date', 'pre_r1_stage_date', 
+        'r1_date', 'r2_date', 'site_visit_date', 'rejected_date', 'sector', 'twelve_m_revenue', 
+        'equity', 'debt', 'grants', 'video_url', 'language', 'no_of_founders', 'team_size', 
+        'city', 'state', 'founding_year', 'application_date'
+    )
+    
+    readonly_fields = (
+        'in_review_date', 'pre_r1_stage_date', 'r1_date', 'r2_date', 'site_visit_date', 
+        'rejected_date', 'last_edited_on', 'last_edited_by'
+    )
 
     def save_model(self, request, obj, form, change):
         obj.last_edited_by = request.user
