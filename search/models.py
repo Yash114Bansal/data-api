@@ -1,6 +1,24 @@
 from django.db import models
+from django.contrib.auth.models import User
+from django.utils import timezone
+
+
+
+class Source(models.Model):
+    name = models.CharField(max_length=200, unique=True)
+
+    def __str__(self) -> str:
+        return self.name
 
 class Company(models.Model):
+    STATUS_CHOICES = [
+        ('in_review', 'In-review'),
+        ('pre_r1_stage', 'Pre-R1 stage'),
+        ('r1', 'R1'),
+        ('r2', 'R2'),
+        ('site_visit', 'Site visit'),
+        ('rejected', 'Rejected'),
+    ]
     cin = models.CharField(max_length=50, unique=True)
     name = models.CharField(max_length=255, blank=True, null=True)
     incorporation_date = models.CharField(max_length=50, blank=True, null=True)
@@ -28,8 +46,61 @@ class Company(models.Model):
     status_under_cirp = models.CharField(max_length=50, blank=True, null=True)
     pan = models.CharField(max_length=50, blank=True, null=True)
 
+    # New fields for specific statuses
+    current_status = models.CharField(max_length=50, choices=STATUS_CHOICES, blank=True, null=True)
+    status_comment = models.TextField(blank=True, null=True)
+    notes = models.TextField(blank=True, null=True)
+    additional_comments = models.TextField(blank=True, null=True)
+    attachment1 = models.FileField(upload_to='attachments/', blank=True, null=True)
+    attachment2 = models.FileField(upload_to='attachments/', blank=True, null=True)
+    attachment3 = models.FileField(upload_to='attachments/', blank=True, null=True)
+    relevant_link1 = models.URLField(max_length=200, blank=True, null=True)
+    relevant_link2 = models.URLField(max_length=200, blank=True, null=True)
+    relevant_link3 = models.URLField(max_length=200, blank=True, null=True)
+    deal_owner = models.ManyToManyField(User, related_name='deal_companies', blank=True)
+    last_edited_by = models.ForeignKey(User, related_name='edited_companies', on_delete=models.SET_NULL, blank=True, null=True)
+    source = models.ForeignKey(Source, on_delete=models.SET_NULL, blank=True, null=True)
+
+    # Fields for specific statuses
+    in_review_comment = models.TextField(blank=True, null=True)
+    pre_r1_stage_comment = models.TextField(blank=True, null=True)
+    r1_comment = models.TextField(blank=True, null=True)
+    r2_comment = models.TextField(blank=True, null=True)
+    site_visit_comment = models.TextField(blank=True, null=True)
+    rejected_comment = models.TextField(blank=True, null=True)
+    in_review_date = models.DateField(blank=True, null=True)
+    pre_r1_stage_date = models.DateField(blank=True, null=True)
+    r1_date = models.DateField(blank=True, null=True)
+    r2_date = models.DateField(blank=True, null=True)
+    site_visit_date = models.DateField(blank=True, null=True)
+    rejected_date = models.DateField(blank=True, null=True)
+
+
+    sector = models.CharField(max_length=100, blank=True, null=True)
+    twelve_m_revenue = models.DecimalField(max_digits=12, decimal_places=2, blank=True, null=True)
+    equity = models.DecimalField(max_digits=100, decimal_places=2, blank=True, null=True)
+    debt = models.DecimalField(max_digits=12, decimal_places=2, blank=True, null=True)
+    grants = models.DecimalField(max_digits=12, decimal_places=2, blank=True, null=True)
+    video_url = models.URLField(max_length=200,blank=True, null=True)
+    language = models.CharField(max_length=50, blank=True, null=True)
+    class Meta:
+        verbose_name_plural = "Companies"
+
     def __str__(self) -> str:
         return f"{self.name} || {self.cin}"
+
+    def save(self, *args, **kwargs):
+        status_date_mapping = {
+            'in_review': 'in_review_date',
+            'pre_r1_stage': 'pre_r1_stage_date',
+            'r1': 'r1_date',
+            'r2': 'r2_date',
+            'site_visit': 'site_visit_date',
+            'rejected': 'rejected_date',
+        }
+        if self.current_status in status_date_mapping:
+            setattr(self, status_date_mapping[self.current_status], timezone.now().date())
+        super().save(*args, **kwargs)
 
 class Director(models.Model):
     company = models.ForeignKey(Company, related_name='directors', on_delete=models.CASCADE)
@@ -77,3 +148,4 @@ class GSTData(models.Model):
         unique_together = ('gst_no', 'year')
     def __str__(self) -> str:
         return f"{self.gst_no} || {self.year} || {self.company_name} "
+    
