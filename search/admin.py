@@ -35,14 +35,15 @@ class StartupAdmin(admin.ModelAdmin):
     list_filter = ('current_status', 'sector', 'last_edited_on')
 
     fields = (
-        'legal_entity', 'name', 'mobile_number', 'founder_name', 'about', 'current_status', 
-        'status_comment', 'notes', 'additional_comments', 'attachment1', 'attachment2',
-        'attachment3', 'relevant_link1', 'relevant_link2', 'relevant_link3', 'deal_owner', 
-        'last_edited_by', 'source', 'in_review_comment', 'pre_r1_stage_comment', 'r1_comment', 
-        'r2_comment', 'site_visit_comment', 'rejected_comment', 'in_review_date', 'pre_r1_stage_date', 
-        'r1_date', 'r2_date', 'site_visit_date', 'rejected_date', 'sector', 'twelve_m_revenue', 
-        'equity', 'debt', 'grants', 'video_url', 'language', 'no_of_founders', 'team_size', 
-        'city', 'state', 'founding_year', 'application_date'
+        'legal_entity', 'name', 'mobile_number', 'founder_name', 'about','no_of_founders',  
+        'team_size',  'city', 'state','sector','ARR', 'founding_year',
+        'equity', 'debt', 'grants', 'video_url', 'language', 'current_status', 
+        'application_date','in_review_date', 'pre_r1_stage_date', 'r1_date', 'r2_date', 'site_visit_date', 'rejected_date', 
+        'last_edited_on', 'last_edited_by', 'in_review_comment', 'pre_r1_stage_comment', 'r1_comment', 
+        'r2_comment', 'site_visit_comment', 'rejected_comment','notes','additional_comments',
+        'attachment1', 'attachment2', 'attachment3', 'relevant_link1', 'relevant_link2', 'relevant_link3', 'deal_owner', 
+         'source', 'source_name', 
+         
     )
     
     readonly_fields = (

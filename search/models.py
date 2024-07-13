@@ -63,7 +63,6 @@ class Startup(models.Model):
     founder_name = models.CharField(max_length=200, null=True, blank=True)
     about = models.TextField(blank=True, null=True)
     current_status = models.CharField(max_length=50, choices=STATUS_CHOICES, blank=True, null=True)
-    status_comment = models.TextField(blank=True, null=True)
     notes = models.TextField(blank=True, null=True)
     additional_comments = models.TextField(blank=True, null=True)
     attachment1 = models.FileField(upload_to='attachments/', blank=True, null=True)
@@ -75,6 +74,7 @@ class Startup(models.Model):
     deal_owner = models.ManyToManyField(User, related_name='deal_companies', blank=True)
     last_edited_by = models.ForeignKey(User, related_name='edited_companies', on_delete=models.SET_NULL, blank=True, null=True)
     source = models.ForeignKey(Source, on_delete=models.SET_NULL, blank=True, null=True)
+    source_name = models.ForeignKey(Source,related_name='src_name' ,on_delete=models.SET_NULL, blank=True, null=True)
 
     # Fields for specific statuses
     in_review_comment = models.TextField(blank=True, null=True)
@@ -92,7 +92,7 @@ class Startup(models.Model):
 
 
     sector = models.CharField(max_length=100, blank=True, null=True)
-    twelve_m_revenue = models.DecimalField(max_digits=12, decimal_places=2, blank=True, null=True)
+    ARR = models.DecimalField(max_digits=12, decimal_places=2, blank=True, null=True)
     equity = models.DecimalField(max_digits=100, decimal_places=2, blank=True, null=True)
     debt = models.DecimalField(max_digits=12, decimal_places=2, blank=True, null=True)
     grants = models.DecimalField(max_digits=12, decimal_places=2, blank=True, null=True)
