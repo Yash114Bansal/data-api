@@ -113,6 +113,8 @@ class Startup(models.Model):
     application_date = models.DateField(blank=True, null=True)
     last_edited_on = models.DateTimeField(auto_now=True)
     email = models.EmailField(null=True, blank=True)
+    phone_number = models.CharField(max_length=10, blank=True, null=True)
+    
     def save(self, *args, **kwargs):
         status_date_mapping = {
             'in_review': 'in_review_date',

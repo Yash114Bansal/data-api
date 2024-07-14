@@ -70,7 +70,7 @@ class StartupAdmin(admin.ModelAdmin):
         'last_edited_on', 'last_edited_by', 'in_review_comment', 'pre_r1_stage_comment', 'r1_comment', 
         'r2_comment', 'site_visit_comment', 'rejected_comment','notes','additional_comments',
         'attachment1', 'attachment2', 'attachment3', 'relevant_link1', 'relevant_link2', 'relevant_link3', 'deal_owner', 
-         'source', 'source_name', 'email'
+         'source', 'source_name', 'email', 'phone_number'
          
     )
     
