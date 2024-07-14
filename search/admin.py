@@ -17,6 +17,14 @@ class StartupCountAdmin(admin.ModelAdmin):
             response.context_data['status_counts'] = status_counts
 
         return response
+    def has_add_permission(self, request):
+        return False  # Disable the ability to add new objects
+
+    def has_change_permission(self, request, obj=None):
+        return False  # Disable the ability to change existing objects
+
+    def has_delete_permission(self, request, obj=None):
+        return False  # Disable the ability to delete objects
 
 class DirectorInline(admin.StackedInline):
     model = Director
