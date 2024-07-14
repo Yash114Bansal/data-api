@@ -33,6 +33,7 @@ class CompanyAdmin(admin.ModelAdmin):
         obj.last_edited_by = request.user
         super().save_model(request, obj, form, change)
 
+
 @admin.register(Startup)
 class StartupAdmin(admin.ModelAdmin):
     list_display = ('name', 'founder_name', 'sector', 'current_status', 'last_edited_on')
@@ -65,6 +66,15 @@ class StartupAdmin(admin.ModelAdmin):
     def save_model(self, request, obj, form, change):
         obj.last_edited_by = request.user
         super().save_model(request, obj, form, change)
+    def render_change_form(self, request, context, add=False, change=False, form_url='', obj=None):
+        context.update({
+            'show_save': True,
+            'show_save_and_continue': False,
+            'show_save_and_add_another': False,
+            'show_delete': True
+        })
+        return super().render_change_form(request, context, add, change, form_url, obj)
+
 
 @admin.register(Director)
 class DirectorAdmin(admin.ModelAdmin):
