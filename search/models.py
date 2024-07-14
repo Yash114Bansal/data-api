@@ -125,6 +125,9 @@ class Startup(models.Model):
         if self.current_status in status_date_mapping:
             setattr(self, status_date_mapping[self.current_status], timezone.now().date())
         super().save(*args, **kwargs)
+    
+    def __str__(self) -> str:
+        return self.name
 
 class Director(models.Model):
     company = models.ForeignKey(Company, related_name='directors', on_delete=models.CASCADE)
