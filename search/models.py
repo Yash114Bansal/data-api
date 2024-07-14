@@ -178,3 +178,9 @@ class GSTData(models.Model):
     def __str__(self) -> str:
         return f"{self.gst_no} || {self.year} || {self.company_name} "
     
+
+class StartupStatusCounts(Startup):
+    class Meta:
+        proxy = True
+        verbose_name = 'Startup Status Counts'
+        verbose_name_plural = 'Startup Status Counts'

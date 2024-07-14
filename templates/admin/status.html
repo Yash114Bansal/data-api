@@ -1,0 +1,87 @@
+{% extends "admin/change_list.html" %}
+
+{% block content_title %}
+    <style>
+        /* Example embedded CSS */
+        .admin-title {
+            color: #336699;
+            font-family: 'Arial', sans-serif;
+        }
+
+        .result-list {
+            background-color: #f0f0f0;
+            padding: 10px;
+            margin-bottom: 20px;
+        }
+
+        .paginator {
+            font-style: italic;
+        }
+
+        .status-item {
+            font-size: 24px; /* Adjust size as needed */
+            list-style-type: none; /* Remove bullet points */
+            margin-left: 0; /* Remove default indentation */
+            padding-left: 0; /* Remove default padding */
+            margin-bottom: 10px; /* Add margin bottom for spacing */
+        }
+
+        .status-heading {
+            color: #555; /* Adjust heading color */
+            font-size: 20px; /* Adjust heading size */
+            font-weight: bold;
+        }
+
+        .status-key {
+            color: #555; /* Adjust key color */
+            display: inline-block; /* Ensure inline display */
+            width: 100px; /* Adjust width as needed for alignment */
+        }
+
+        .status-value {
+            color: #555; /* Adjust value color */
+            display: inline-block; /* Ensure inline display */
+            width: 100px; /* Adjust width as needed for alignment */
+        }
+    </style>
+    <h1 class="admin-title">Sales Summary</h1>
+{% endblock %}
+
+{% block result_list %}
+    <div class="result-list">
+        <div style="overflow: hidden;">
+            <div style="float: left; width: 50%;">
+                <h2 class="status-heading">Stage</h2>
+                <ul>
+                    {% for status_count in status_counts %}
+                        <li class="status-item">
+                            <span class="status-key">{{ status_count.current_status }}:</span>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+            <div style="float: left; width: 50%;">
+                <h2 class="status-heading">Count</h2>
+                <ul>
+                    {% for status_count in status_counts %}
+                        <li class="status-item">
+                            <span class="status-value">{{ status_count.count }}</span>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block pagination %}
+    {% if cl.show_full_result_count %}
+        <p class="paginator">
+            {% if cl.result_count == 1 %}
+                1 result
+            {% else %}
+                Showing {{ cl.result_count }} results
+            {% endif %}
+        </p>
+    {% endif %}
+{% endblock %}

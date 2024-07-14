@@ -1,8 +1,22 @@
 from django.contrib import admin
 from django.contrib.auth import get_user_model
-from .models import Company, Director, GSTData, Source, Startup, SourceName
-
+from .models import Company, Director, GSTData, Source, Startup, SourceName, StartupStatusCounts
+from django.db.models import Count
 User = get_user_model()
+
+@admin.register(StartupStatusCounts)
+class StartupCountAdmin(admin.ModelAdmin):
+    change_list_template = 'admin/status.html'
+
+    def changelist_view(self, request, extra_context=None):
+        response = super().changelist_view(request, extra_context=extra_context)
+        
+        if hasattr(response, 'context_data'):
+            # Fetch status counts including those with 0 count
+            status_counts = Startup.objects.values('current_status').annotate(count=Count('id'))
+            response.context_data['status_counts'] = status_counts
+
+        return response
 
 class DirectorInline(admin.StackedInline):
     model = Director
