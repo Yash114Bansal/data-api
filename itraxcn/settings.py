@@ -25,7 +25,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.environ.get("SECRET_KEY")
 
 AUTH_KEY = os.environ.get("AUTH_KEY")
-
+SERRI_API_KEY = os.environ.get("SERRI_API_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 

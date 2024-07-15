@@ -4,6 +4,19 @@ from django.dispatch import receiver
 from django.core.mail import send_mail
 from django.conf import settings
 from .models import Startup
+from django.conf import settings
+import requests
+
+def sendWhatsappMessage(phone, status):
+    data = {
+            "apiKey": settings.SERRI_API_KEY,
+            "destination": f"+91{phone}",
+            "campaignName": status
+        }
+    url = "https://backend.api-wa.co/campaign/serri-india/api/v2"
+
+    requests.post(url=url, data=data)
+
 
 @receiver(pre_save, sender=Startup)
 def send_status_change_notification(sender, instance, **kwargs):
@@ -23,3 +36,6 @@ def send_status_change_notification(sender, instance, **kwargs):
                 cc.append(instance.email)
             send_mail(subject, message, None, [startup_email], cc)
 
+        phone_number = instance.phone_number
+        if phone_number:
+            sendWhatsappMessage(phone_number, instance.current_status)
