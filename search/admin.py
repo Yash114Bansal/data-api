@@ -1,5 +1,7 @@
 from django.contrib import admin
 from django.contrib.auth import get_user_model
+
+from extras.models import OtherCompanyInfo
 from .models import Company, Director, GSTData, Source, Startup, SourceName, StartupStatusCounts, Team
 from django.db.models import Count, Q
 
@@ -56,6 +58,10 @@ class CompanyAdmin(admin.ModelAdmin):
         obj.last_edited_by = request.user
         super().save_model(request, obj, form, change)
 
+class OtherCompanyInfoInline(admin.StackedInline):
+    model = OtherCompanyInfo
+    can_delete = False
+    verbose_name_plural = 'Other Company Info'
 
 @admin.register(Startup)
 class StartupAdmin(admin.ModelAdmin):
@@ -63,17 +69,26 @@ class StartupAdmin(admin.ModelAdmin):
     search_fields = ('name', 'founder_name', 'sector', 'current_status')
     list_filter = ('current_status', 'sector', 'last_edited_on')
 
-    fields = (
-        'legal_entity', 'name', 'mobile_number', 'founder_name', 'about','no_of_founders',  
-        'team_size',  'city', 'state','sector','ARR', 'founding_year',
-        'equity', 'debt', 'grants', 'video_url', 'language', 'current_status', 
-        'application_date','in_review_date', 'pre_r1_stage_date', 'r1_date', 'r2_date', 'site_visit_date', 'rejected_date', 
-        'last_edited_on', 'last_edited_by', 'in_review_comment', 'pre_r1_stage_comment', 'r1_comment', 
-        'r2_comment', 'site_visit_comment', 'rejected_comment','notes','additional_comments',
-        'attachment1', 'attachment2', 'attachment3', 'relevant_link1', 'relevant_link2', 'relevant_link3', 'deal_owner', 'deal_viewer',
-         'source', 'source_name', 'email', 'phone_number'
-         
+    fieldsets = (
+        ('Main Info', {
+                'fields': ('legal_entity', 'name', 'mobile_number', 'founder_name', 'about', 'no_of_founders', 
+                        'team_size', 'city', 'state', 'sector', 'ARR', 'founding_year', 'equity', 'debt', 
+                        'grants', 'video_url', 'language', 'current_status', 'last_edited_by', 
+                        'attachment1', 'attachment2', 'attachment3', 'relevant_link1', 'relevant_link2', 
+                        'relevant_link3', 'deal_owner', 'deal_viewer', 'source', 'source_name', 'email', 
+                        'phone_number','intent_driven', 'fund_alignment', 'community_mindset', 'systemic_change_potential'),
+            }),
+        ('Comments', {
+                'fields': ('in_review_comment', 'pre_r1_stage_comment', 'r1_comment', 'r2_comment', 
+                        'site_visit_comment', 'rejected_comment', 'notes', 'additional_comments', ),
+            }),
+        ('Dates', {
+                'fields': ('application_date', 'in_review_date', 'pre_r1_stage_date', 'r1_date', 'r2_date', 
+                        'site_visit_date', 'rejected_date', 'last_edited_on'),
+            }),
+            
     )
+    inlines = [OtherCompanyInfoInline]
     
     readonly_fields = (
         'in_review_date', 'pre_r1_stage_date', 'r1_date', 'r2_date', 'site_visit_date', 

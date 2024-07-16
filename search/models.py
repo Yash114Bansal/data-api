@@ -121,6 +121,25 @@ class Startup(models.Model):
     email = models.EmailField(null=True, blank=True)
     phone_number = models.CharField(max_length=10, blank=True, null=True)
     
+    # Yes NO Questions
+
+    intent_driven = models.BooleanField(
+        verbose_name='Intent Driven',
+        help_text='Are they Intent driven?', blank=True, null=True
+    )
+    fund_alignment = models.BooleanField(
+        verbose_name='Fund Alignment',
+        help_text='Is their business model directly increasing the income of India 2 or India 3?',blank=True, null=True
+    )
+    community_mindset = models.BooleanField(
+        verbose_name='Community Mindset',
+        help_text='Will they give their time to someone they don`t know, who is seeking advice?',blank=True, null=True
+    )
+    systemic_change_potential = models.BooleanField(
+        verbose_name='Systemic Change Potential',
+        help_text='If their business succeeds, will they continue to seek other ways to help solve the same social problem?',blank=True, null=True
+    )
+
     def save(self, *args, **kwargs):
         status_date_mapping = {
             'in_review': 'in_review_date',
