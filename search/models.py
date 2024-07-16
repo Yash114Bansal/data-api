@@ -52,7 +52,12 @@ class Company(models.Model):
     def __str__(self) -> str:
         return f"{self.name} || {self.cin}"
 
+class Team(models.Model):
+    name = models.CharField(max_length=200, unique=True)
+    members = models.ManyToManyField(User)
 
+    def __str__(self) -> str:
+        return self.name
 
 class Startup(models.Model):
     # New fields for specific statuses
@@ -78,7 +83,8 @@ class Startup(models.Model):
     relevant_link1 = models.URLField(max_length=200, blank=True, null=True)
     relevant_link2 = models.URLField(max_length=200, blank=True, null=True)
     relevant_link3 = models.URLField(max_length=200, blank=True, null=True)
-    deal_owner = models.ManyToManyField(User, related_name='deal_companies', blank=True)
+    deal_owner = models.ForeignKey(User, related_name='deal_companies', blank=True, on_delete=models.SET_NULL, null=True)
+    deal_viewer = models.ForeignKey(Team, blank=True, null=True,on_delete=models.SET_NULL)
     last_edited_by = models.ForeignKey(User, related_name='edited_companies', on_delete=models.SET_NULL, blank=True, null=True)
     source = models.ForeignKey(Source, on_delete=models.SET_NULL, blank=True, null=True)
     source_name = models.ForeignKey(SourceName,related_name='src_name' ,on_delete=models.SET_NULL, blank=True, null=True)
@@ -186,3 +192,4 @@ class StartupStatusCounts(Startup):
         proxy = True
         verbose_name = 'Startup Status Counts'
         verbose_name_plural = 'Startup Status Counts'
+

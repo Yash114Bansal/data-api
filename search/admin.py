@@ -1,7 +1,8 @@
 from django.contrib import admin
 from django.contrib.auth import get_user_model
-from .models import Company, Director, GSTData, Source, Startup, SourceName, StartupStatusCounts
-from django.db.models import Count
+from .models import Company, Director, GSTData, Source, Startup, SourceName, StartupStatusCounts, Team
+from django.db.models import Count, Q
+
 User = get_user_model()
 
 @admin.register(StartupStatusCounts)
@@ -69,7 +70,7 @@ class StartupAdmin(admin.ModelAdmin):
         'application_date','in_review_date', 'pre_r1_stage_date', 'r1_date', 'r2_date', 'site_visit_date', 'rejected_date', 
         'last_edited_on', 'last_edited_by', 'in_review_comment', 'pre_r1_stage_comment', 'r1_comment', 
         'r2_comment', 'site_visit_comment', 'rejected_comment','notes','additional_comments',
-        'attachment1', 'attachment2', 'attachment3', 'relevant_link1', 'relevant_link2', 'relevant_link3', 'deal_owner', 
+        'attachment1', 'attachment2', 'attachment3', 'relevant_link1', 'relevant_link2', 'relevant_link3', 'deal_owner', 'deal_viewer',
          'source', 'source_name', 'email', 'phone_number'
          
     )
@@ -78,11 +79,24 @@ class StartupAdmin(admin.ModelAdmin):
         'in_review_date', 'pre_r1_stage_date', 'r1_date', 'r2_date', 'site_visit_date', 
         'rejected_date', 'last_edited_on', 'last_edited_by'
     )
-
+    def get_readonly_fields(self, request, obj=None):
+        readonly_fields = list(self.readonly_fields)
+        # breakpoint()
+        if request.user.is_superuser or request.user == obj.deal_owner:
+            return readonly_fields
+        elif request.user in obj.deal_viewer.members.all():
+            # return readonly_fields
+            return [field.name for field in obj._meta.fields ]
+        else:
+            return readonly_fields
+    
     def get_queryset(self, request):
         queryset = super().get_queryset(request)
         if not request.user.is_superuser:
-            queryset = queryset.filter(deal_owner=request.user)
+            queryset = queryset.filter(
+                Q(deal_owner=request.user) | Q(deal_viewer__members=request.user)
+            ).distinct()
+
         return queryset
 
     def save_model(self, request, obj, form, change):
@@ -112,3 +126,4 @@ class GSTDataAdmin(admin.ModelAdmin):
 
 admin.site.register(Source)
 admin.site.register(SourceName)
+admin.site.register(Team)
