@@ -4,7 +4,7 @@ from django.contrib.auth import get_user_model
 from extras.models import OtherCompanyInfo
 from .models import Company, Director, GSTData, Source, Startup, SourceName, StartupStatusCounts, Team
 from django.db.models import Count, Q
-
+from django.utils.html import format_html
 User = get_user_model()
 
 @admin.register(StartupStatusCounts)
@@ -94,6 +94,32 @@ class StartupAdmin(admin.ModelAdmin):
         'in_review_date', 'pre_r1_stage_date', 'r1_date', 'r2_date', 'site_visit_date', 
         'rejected_date', 'last_edited_on', 'last_edited_by'
     )
+    def formfield_for_dbfield(self, db_field, **kwargs):
+        formfield = super().formfield_for_dbfield(db_field, **kwargs)
+        if db_field.name in ['attachment1', 'attachment2', 'attachment3']:
+            request = kwargs.get('request')
+            if request and request.path.endswith('/change/'):
+                obj = self.get_object(request, request.resolver_match.kwargs['object_id'])
+                if obj:
+                    url = getattr(obj, db_field.name).url if getattr(obj, db_field.name) else None
+                    if url:
+                        preview_html = self.get_preview_html(url)
+                        original_render = formfield.widget.render
+
+                        def custom_render(name, value, attrs=None, renderer=None):
+                            input_html = original_render(name, value, attrs, renderer)
+                            return format_html('{}<br>{}', preview_html, input_html)
+
+                        formfield.widget.render = custom_render
+
+        return formfield
+
+    def get_preview_html(self, url):
+        if url.endswith(('.mp4', '.mov', '.avi', '.wmv')):
+            return format_html('<video width="600" controls><source src="{}" type="video/mp4">Your browser does not support the video tag.</video>', url)
+        else:
+            return ''
+    
     def get_readonly_fields(self, request, obj=None):
         readonly_fields = list(self.readonly_fields)
         # breakpoint()
