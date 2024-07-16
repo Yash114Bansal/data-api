@@ -64,6 +64,10 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
+JAZZMIN_SETTINGS = {
+    "site_logo": "/img/logo.png",
+}
+
 ROOT_URLCONF = 'itraxcn.urls'
 
 TEMPLATES = [
