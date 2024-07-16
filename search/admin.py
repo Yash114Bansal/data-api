@@ -96,12 +96,15 @@ class StartupAdmin(admin.ModelAdmin):
     )
     def formfield_for_dbfield(self, db_field, **kwargs):
         formfield = super().formfield_for_dbfield(db_field, **kwargs)
-        if db_field.name in ['attachment1', 'attachment2', 'attachment3']:
+        if db_field.name in ['attachment1', 'attachment2', 'attachment3', 'video_url']:
             request = kwargs.get('request')
             if request and request.path.endswith('/change/'):
                 obj = self.get_object(request, request.resolver_match.kwargs['object_id'])
                 if obj:
-                    url = getattr(obj, db_field.name).url if getattr(obj, db_field.name) else None
+                    if db_field.name == 'video_url':
+                        url = getattr(obj, 'video_url')
+                    else:
+                        url = getattr(obj, db_field.name).url if getattr(obj, db_field.name) else None
                     if url:
                         preview_html = self.get_preview_html(url)
                         original_render = formfield.widget.render
@@ -117,6 +120,16 @@ class StartupAdmin(admin.ModelAdmin):
     def get_preview_html(self, url):
         if url.endswith(('.mp4', '.mov', '.avi', '.wmv')):
             return format_html('<video width="600" controls><source src="{}" type="video/mp4">Your browser does not support the video tag.</video>', url)
+        
+        elif url.endswith('.pdf'):
+            return format_html(
+                '''
+                <a href="{}" target="_blank" onclick="window.open('{}', 'PDF', 'width=800,height=600'); return false;" 
+                style="display: inline-block; padding: 10px 20px; font-size: 16px; color: white; background-color: #007bff; border: none; border-radius: 5px; text-decoration: none; text-align: center;">
+                Open PDF</a>
+                ''', url, url
+            )
+        
         else:
             return ''
     
