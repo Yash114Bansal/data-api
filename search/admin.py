@@ -1,11 +1,13 @@
 from django.contrib import admin
 from django.contrib.auth import get_user_model
-
+from django.utils import timezone
+from datetime import timedelta
 from extras.models import OtherCompanyInfo
 from .models import Company, Director, GSTData, Source, Startup, SourceName, StartupStatusCounts, Team
 from django.db.models import Count, Q
 from django.utils.html import format_html
 User = get_user_model()
+
 
 @admin.register(StartupStatusCounts)
 class StartupCountAdmin(admin.ModelAdmin):
@@ -13,13 +15,36 @@ class StartupCountAdmin(admin.ModelAdmin):
 
     def changelist_view(self, request, extra_context=None):
         response = super().changelist_view(request, extra_context=extra_context)
-        
+
         if hasattr(response, 'context_data'):
-            # Fetch status counts including those with 0 count
+            # Calculate the most recent Saturday
+            today = timezone.now().date()
+            last_saturday = today - timedelta(days=(today.weekday() + 2) % 7)
+
+            # Overall status counts
+            status_choices = dict(Startup.STATUS_CHOICES)
+
+            # Get overall counts
             status_counts = Startup.objects.values('current_status').annotate(count=Count('id'))
-            response.context_data['status_counts'] = status_counts
+            status_counts_dict = {item['current_status']: item['count'] for item in status_counts}
+            
+            # Initialize counts for all statuses to ensure all are present
+            overall_counts = {status: status_counts_dict.get(status, 0) for status in status_choices.keys()}
+            # Counts for each status since the last Saturday
+            last_week_done = {
+                'in_review': Startup.objects.filter(in_review_date__gte=last_saturday).count(),
+                'pre_r1_stage': Startup.objects.filter(pre_r1_stage_date__gte=last_saturday).count(),
+                'r1': Startup.objects.filter(r1_date__gte=last_saturday).count(),
+                'r2': Startup.objects.filter(r2_date__gte=last_saturday).count(),
+                'site_visit': Startup.objects.filter(site_visit_date__gte=last_saturday).count(),
+                'rejected': Startup.objects.filter(rejected_date__gte=last_saturday).count(),
+            }
+
+            response.context_data['status_counts'] = overall_counts
+            response.context_data['last_week_done'] = last_week_done
 
         return response
+
     def has_add_permission(self, request):
         return False  # Disable the ability to add new objects
 

@@ -2,46 +2,70 @@
 
 {% block content_title %}
     <style>
-        /* Example embedded CSS */
         .admin-title {
             color: #336699;
             font-family: 'Arial', sans-serif;
+            text-align: center;
+            margin-bottom: 20px;
         }
 
         .result-list {
-            background-color: #f0f0f0;
-            padding: 10px;
-            margin-bottom: 20px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .tile {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            margin: 15px;
+            width: calc(45% - 30px);
+            box-sizing: border-box;
+            transition: transform 0.3s ease;
+        }
+
+        .tile:hover {
+            transform: translateY(-5px);
+        }
+
+        .tile h2 {
+            color: #333;
+            font-size: 22px;
+            font-weight: bold;
+            margin-bottom: 15px;
+            border-bottom: 2px solid #336699;
+            padding-bottom: 5px;
+        }
+
+        .subtile {
+            background-color: #f9f9f9;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .subtile .status-key {
+            color: #555;
+            font-weight: bold;
+            font-size: 20px;
+        }
+
+        .subtile .status-value {
+            color: #555;
+            font-size: 35px;
         }
 
         .paginator {
             font-style: italic;
-        }
-
-        .status-item {
-            font-size: 24px; /* Adjust size as needed */
-            list-style-type: none; /* Remove bullet points */
-            margin-left: 0; /* Remove default indentation */
-            padding-left: 0; /* Remove default padding */
-            margin-bottom: 10px; /* Add margin bottom for spacing */
-        }
-
-        .status-heading {
-            color: #555; /* Adjust heading color */
-            font-size: 20px; /* Adjust heading size */
-            font-weight: bold;
-        }
-
-        .status-key {
-            color: #555; /* Adjust key color */
-            display: inline-block; /* Ensure inline display */
-            width: 100px; /* Adjust width as needed for alignment */
-        }
-
-        .status-value {
-            color: #555; /* Adjust value color */
-            display: inline-block; /* Ensure inline display */
-            width: 100px; /* Adjust width as needed for alignment */
+            text-align: center;
+            margin-top: 20px;
+            color: #666;
         }
     </style>
     <h1 class="admin-title">Status Counts</h1>
@@ -49,27 +73,26 @@
 
 {% block result_list %}
     <div class="result-list">
-        <div style="overflow: hidden;">
-            <div style="float: left; width: 50%;">
-                <h2 class="status-heading">Stage</h2>
-                <ul>
-                    {% for status_count in status_counts %}
-                        <li class="status-item">
-                            <span class="status-key">{{ status_count.current_status }}:</span>
-                        </li>
-                    {% endfor %}
-                </ul>
+        {% if status_counts %}
+            <div class="tile">
+                <h2>Current Status Counts</h2>
+                {% for status, count in status_counts.items %}
+                    <div class="subtile">
+                        <span class="status-key">{{ status|capfirst }}:</span>
+                        <span class="status-value">{{ count }}</span>
+                    </div>
+                {% endfor %}
             </div>
-            <div style="float: left; width: 50%;">
-                <h2 class="status-heading">Count</h2>
-                <ul>
-                    {% for status_count in status_counts %}
-                        <li class="status-item">
-                            <span class="status-value">{{ status_count.count }}</span>
-                        </li>
-                    {% endfor %}
-                </ul>
-            </div>
+        {% endif %}
+
+        <div class="tile">
+            <h2>Counts from Last Saturday</h2>
+            {% for status, count in last_week_done.items %}
+                <div class="subtile">
+                    <span class="status-key">{{ status|capfirst }}:</span>
+                    <span class="status-value">{{ count }}</span>
+                </div>
+            {% endfor %}
         </div>
     </div>
 {% endblock %}
