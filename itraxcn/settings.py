@@ -46,6 +46,7 @@ if CSRF_TRUSTED_ORIGIN :
 
 INSTALLED_APPS = [
     'jazzmin',
+    'django_crontab',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -121,6 +122,9 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+CRONJOBS = [
+    ('0 */6 * * *', 'search.cron.syncSheet')
+]
 
 # Internationalization
 # https://docs.djangoproject.com/en/4.2/topics/i18n/

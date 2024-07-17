@@ -43,26 +43,26 @@ def get_all_rows(doc_name: str) -> List[dict]:
 
 
 
-def is_sheet_updated(doc_name: str) :
+def is_sheet_updated(doc_name: str) -> bool:
     client = settings.GSPREAD_CLIENT
     sh = client.open(doc_name)
     props = sh.fetch_sheet_metadata()  # Example function to fetch metadata
     # print(props)
     modifiedTime = client.get_file_drive_metadata(props["spreadsheetId"]).get("modifiedTime")
-    # sheet_last_modified = datetime.datetime.strptime(props['modifiedTime'], '%Y-%m-%dT%H:%M:%S.%fZ')
-    print(modifiedTime)
-    return modifiedTime 
+    sheet_last_modified = datetime.datetime.strptime(modifiedTime, '%Y-%m-%dT%H:%M:%S.%fZ')
+    return sheet_last_modified > datetime.datetime.now() - datetime.timedelta(hours=6)
 
 def get_value_or_none(row, field):
     value = row.get(field)
     return value if value else None
 
 
-def syncData():
-    from .models import Company, Startup
+def syncData(sheetName: str):
+    from .models import Startup
 
-    sheetName = "Next Bharat Residency Program- WhatsApp Bot data"
-    # TODO check if sheet is updated or not
+    if not is_sheet_updated(sheetName):
+        return
+
 
     # If sheet is updated
     rows = get_all_rows(sheetName)
