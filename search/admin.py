@@ -3,7 +3,7 @@ from django.contrib.auth import get_user_model
 from django.utils import timezone
 from datetime import timedelta
 from extras.models import OtherCompanyInfo
-from .models import Company, Director, GSTData, Source, Startup, SourceName, StartupStatusCounts, Team
+from .models import Company, Director, GSTData, Source, Startup, StartupStatusCounts, Team
 from django.db.models import Count, Q
 from django.utils.html import format_html
 User = get_user_model()
@@ -204,5 +204,4 @@ class GSTDataAdmin(admin.ModelAdmin):
     list_filter = ('year', 'gst_status')
 
 admin.site.register(Source)
-admin.site.register(SourceName)
 admin.site.register(Team)
