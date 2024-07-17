@@ -109,7 +109,7 @@ class StartupAdmin(admin.ModelAdmin):
             }),
         ('Dates', {
                 'fields': ('application_date', 'in_review_date', 'pre_r1_stage_date', 'r1_date', 'r2_date', 
-                        'site_visit_date', 'rejected_date', 'last_edited_on'),
+                        'site_visit_date', 'rejected_date', 'last_edited_on','knockout_date'),
             }),
             
     )

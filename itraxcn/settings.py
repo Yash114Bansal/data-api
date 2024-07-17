@@ -13,6 +13,8 @@ import os
 from pathlib import Path
 from dotenv import load_dotenv
 
+from search.services import initialize_gspread
+
 load_dotenv()
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -144,6 +146,8 @@ EMAIL_HOST_PASSWORD = os.environ.get('MAIL_PASS')
 
 STATIC_URL = 'static/'
 STATIC_ROOT = os.path.join(BASE_DIR, "static")
+
+GSPREAD_CLIENT = initialize_gspread()
 
 # MEDIA_URL = '/attachments/'
 # MEDIA_ROOT = os.path.join(BASE_DIR, 'attachments')

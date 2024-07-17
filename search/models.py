@@ -61,6 +61,7 @@ class Startup(models.Model):
         ('r2', 'R2'),
         ('site_visit', 'Site visit'),
         ('rejected', 'Rejected'),
+        ('knockout', 'Knockout')
     ]
     INBOUND_OUTBOUND_CHOICES = [
     ('INBOUND', 'Inbound'),
@@ -100,10 +101,11 @@ class Startup(models.Model):
     r2_date = models.DateField(blank=True, null=True)
     site_visit_date = models.DateField(blank=True, null=True)
     rejected_date = models.DateField(blank=True, null=True)
+    knockout_date = models.DateField(blank=True, null=True)
 
 
     sector = models.CharField(max_length=100, blank=True, null=True)
-    ARR = models.DecimalField(max_digits=12, decimal_places=2, blank=True, null=True)
+    ARR = models.CharField(max_length=200, blank=True, null=True)
     equity = models.DecimalField(max_digits=100, decimal_places=2, blank=True, null=True)
     debt = models.DecimalField(max_digits=12, decimal_places=2, blank=True, null=True)
     grants = models.DecimalField(max_digits=12, decimal_places=2, blank=True, null=True)
