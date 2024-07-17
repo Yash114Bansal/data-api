@@ -62,6 +62,11 @@ class Startup(models.Model):
         ('site_visit', 'Site visit'),
         ('rejected', 'Rejected'),
     ]
+    INBOUND_OUTBOUND_CHOICES = [
+    ('INBOUND', 'Inbound'),
+    ('OUTBOUND', 'Outbound'),
+    ]
+
     legal_entity = models.OneToOneField(Company,on_delete=models.SET_NULL,blank=True, null=True)
     name = models.CharField(max_length=200, null=True, blank=True)
     mobile_number = models.CharField(max_length=15, null=True, blank=True)
@@ -114,6 +119,12 @@ class Startup(models.Model):
     email = models.EmailField(null=True, blank=True)
     phone_number = models.CharField(max_length=10, blank=True, null=True)
     
+    source_type = models.CharField(
+        max_length=8,
+        choices=INBOUND_OUTBOUND_CHOICES,
+        blank=True,
+        null=True
+    )
     # Yes NO Questions
 
     intent_driven = models.BooleanField(

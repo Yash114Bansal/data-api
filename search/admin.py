@@ -100,7 +100,7 @@ class StartupAdmin(admin.ModelAdmin):
                         'team_size', 'city', 'state', 'sector', 'ARR', 'founding_year', 'equity', 'debt', 
                         'grants', 'video_url', 'language', 'current_status', 'last_edited_by', 
                         'attachment1', 'attachment2', 'attachment3', 'relevant_link1', 'relevant_link2', 
-                        'relevant_link3', 'deal_owner', 'deal_viewer', 'source', 'source_name', 'email', 
+                        'relevant_link3', 'deal_owner', 'deal_viewer', 'source','source_type' ,'source_name','email', 
                         'phone_number','intent_driven', 'fund_alignment', 'community_mindset', 'systemic_change_potential'),
             }),
         ('Comments', {
