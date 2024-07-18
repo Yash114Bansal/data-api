@@ -126,6 +126,7 @@ def syncData(sheetName: str):
                 state=get_value_or_none(row, 'State'),
                 founding_year=get_value_or_none(row, 'Foundingyear'),
                 application_date=datetime.datetime.now(),
+                source_name="Whatsapp Bot",
             )
 
         except:
