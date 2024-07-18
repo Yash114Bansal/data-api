@@ -3,6 +3,7 @@ from search.models import Startup
 
 class OtherCompanyInfo(models.Model):
     # Basic Information
+
     startup = models.OneToOneField(Startup, on_delete=models.SET_NULL,blank=True, null=True)
     age_of_company = models.PositiveIntegerField(
         help_text="Number of years since the company was founded.", blank=True, null=True
@@ -84,7 +85,7 @@ class OtherCompanyInfo(models.Model):
     positives = models.TextField(
         help_text="Strengths or positive aspects of the company.", blank=True, null=True
     )
-    concerns_risks = models.TextField(
+    concerns_or_risks = models.TextField(
         help_text="Concerns or risks associated with the company.", blank=True, null=True
     )
     
@@ -108,6 +109,7 @@ class OtherCompanyInfo(models.Model):
         max_length=255,
         help_text="Role of the beneficiary in the value chain, such as customer, employee, etc.", blank=True, null=True
     )
+    notes = models.TextField(blank=True, null=True)
     
     def __str__(self):
         return self.about_the_company[:50]  # Short description for admin display

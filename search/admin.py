@@ -97,19 +97,27 @@ class StartupAdmin(admin.ModelAdmin):
     fieldsets = (
         ('Main Info', {
                 'fields': ('legal_entity', 'name', 'mobile_number', 'founder_name', 'about', 'no_of_founders', 
-                        'team_size', 'city', 'state', 'sector', 'ARR', 'founding_year', 'equity', 'debt', 
+                        'team_size', 'city', 'state', 'sector', 'sub_sector' ,'ARR', 'founding_year', 'equity', 'debt', 
                         'grants', 'video_url', 'language', 'current_status', 'last_edited_by', 
-                        'attachment1', 'attachment2', 'attachment3', 'relevant_link1', 'relevant_link2', 
-                        'relevant_link3', 'deal_owner', 'deal_viewer', 'source','source_type' ,'source_name','email', 
+                        'pitch_deck','attachment1', 'attachment2', 'relevant_link1', 'website' ,'relevant_link2', 
+                        'deal_owner', 'deal_viewer', 'source','source_type' ,'source_name','email', 
                         'phone_number','intent_driven', 'fund_alignment', 'community_mindset', 'systemic_change_potential'),
             }),
-        ('Comments', {
-                'fields': ('in_review_comment', 'pre_r1_stage_comment', 'r1_comment', 'r2_comment', 
-                        'site_visit_comment', 'rejected_comment', 'notes', 'additional_comments', ),
+            ('Comments', {
+                'fields': (
+                    'approved_for_investments_comment', 'approved_for_residency_comment', 'in_review_comment', 
+                    'ic_comment', 'pre_ic_comment', 'pre_r1_stage_comment', 'r1_comment', 'r2_comment', 
+                    'site_visit_comment', 'to_conduct_r1_comment', 'nomintor_list_comment', 'monitor_comment', 
+                    'rejected_comment', 'additional_comments',
+                ),
             }),
-        ('Dates', {
-                'fields': ('application_date', 'in_review_date', 'pre_r1_stage_date', 'r1_date', 'r2_date', 
-                        'site_visit_date', 'rejected_date', 'last_edited_on','knockout_date'),
+            ('Dates', {
+                'fields': (
+                    'approved_for_investments_date', 'approved_for_residency_date', 'in_review_date', 'ic_date', 
+                    'pre_ic_date', 'pre_r1_stage_date', 'r1_date', 'r2_date', 'site_visit_date', 
+                    'to_conduct_r1_date', 'nominator_list_date', 'monitor_date', 'rejected_date', 
+                    'knockout_date', 'last_interaction_date','application_date', 'last_edited_on' 
+                ),
             }),
             
     )
@@ -121,7 +129,7 @@ class StartupAdmin(admin.ModelAdmin):
     )
     def formfield_for_dbfield(self, db_field, **kwargs):
         formfield = super().formfield_for_dbfield(db_field, **kwargs)
-        if db_field.name in ['attachment1', 'attachment2', 'attachment3', 'video_url']:
+        if db_field.name in ['attachment1', 'attachment2', 'pitch_deck', 'video_url']:
             request = kwargs.get('request')
             if request and request.path.endswith('/change/'):
                 obj = self.get_object(request, request.resolver_match.kwargs['object_id'])

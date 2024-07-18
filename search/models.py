@@ -55,13 +55,29 @@ class Team(models.Model):
 class Startup(models.Model):
     # New fields for specific statuses
     STATUS_CHOICES = [
+        ('approved_for_investments', 'Approved for investments'),
+        ('approved_for_residency', 'Approved for residency'),
         ('in_review', 'In-review'),
         ('pre_r1_stage', 'Pre-R1 stage'),
+        ('ic', 'IC'),
+        ("pre_ic", "Pre-IC"),
         ('r1', 'R1'),
         ('r2', 'R2'),
         ('site_visit', 'Site visit'),
+        ('to_conduct_r1', 'To conduct R1'),
+        ('nominator_list', 'Nominator list'),
+        ('monitor', 'Monitor'),
         ('rejected', 'Rejected'),
         ('knockout', 'Knockout')
+    ]
+    SECTOR_CHOICES = [
+        ('other', "Other"),
+        ('waste_management', "Waste Management"),
+        ('rural_supply_chain', "Rural Supply Chain"),
+        ('mobility', "Mobility"),
+        ('food_and_agriculture', "Food and Agriculture"),
+        ('health', "Health"),
+        ('financial_inclusion', "Financial Inclusion"),
     ]
     INBOUND_OUTBOUND_CHOICES = [
     ('INBOUND', 'Inbound'),
@@ -74,14 +90,13 @@ class Startup(models.Model):
     founder_name = models.CharField(max_length=200, null=True, blank=True)
     about = models.TextField(blank=True, null=True)
     current_status = models.CharField(max_length=50, choices=STATUS_CHOICES, blank=True, null=True)
-    notes = models.TextField(blank=True, null=True)
     additional_comments = models.TextField(blank=True, null=True)
     attachment1 = models.FileField(upload_to='attachments/', blank=True, null=True)
     attachment2 = models.FileField(upload_to='attachments/', blank=True, null=True)
-    attachment3 = models.FileField(upload_to='attachments/', blank=True, null=True)
+    pitch_deck = models.FileField(upload_to='attachments/', blank=True, null=True)
+    website = models.URLField(max_length=200, blank=True, null=True)
     relevant_link1 = models.URLField(max_length=200, blank=True, null=True)
     relevant_link2 = models.URLField(max_length=200, blank=True, null=True)
-    relevant_link3 = models.URLField(max_length=200, blank=True, null=True)
     deal_owner = models.ForeignKey(User, related_name='deal_companies', blank=True, on_delete=models.SET_NULL, null=True)
     deal_viewer = models.ForeignKey(Team, blank=True, null=True,on_delete=models.SET_NULL)
     last_edited_by = models.ForeignKey(User, related_name='edited_companies', on_delete=models.SET_NULL, blank=True, null=True)
@@ -89,22 +104,38 @@ class Startup(models.Model):
     source_name = models.CharField(max_length=200,null=True, blank=True)
 
     # Fields for specific statuses
+    approved_for_investments_comment = models.TextField(blank=True, null=True)
+    approved_for_residency_comment = models.TextField(blank=True, null=True)
     in_review_comment = models.TextField(blank=True, null=True)
+    ic_comment = models.TextField(blank=True, null=True)
+    pre_ic_comment = models.TextField(blank=True, null=True)
     pre_r1_stage_comment = models.TextField(blank=True, null=True)
     r1_comment = models.TextField(blank=True, null=True)
     r2_comment = models.TextField(blank=True, null=True)
     site_visit_comment = models.TextField(blank=True, null=True)
+    to_conduct_r1_comment = models.TextField(blank=True, null=True)
+    nomintor_list_comment = models.TextField(blank=True, null=True)
+    monitor_comment = models.TextField(blank=True, null=True)
     rejected_comment = models.TextField(blank=True, null=True)
+
+    approved_for_investments_date = models.DateField(blank=True, null=True)
+    approved_for_residency_date = models.DateField(blank=True, null=True)
     in_review_date = models.DateField(blank=True, null=True)
+    ic_date = models.DateField(blank=True, null=True)
+    pre_ic_date = models.DateField(blank=True, null=True)
     pre_r1_stage_date = models.DateField(blank=True, null=True)
     r1_date = models.DateField(blank=True, null=True)
     r2_date = models.DateField(blank=True, null=True)
     site_visit_date = models.DateField(blank=True, null=True)
+    to_conduct_r1_date = models.DateField(blank=True, null=True)
+    nominator_list_date = models.DateField(blank=True, null=True)
+    monitor_date = models.DateField(blank=True, null=True)
     rejected_date = models.DateField(blank=True, null=True)
     knockout_date = models.DateField(blank=True, null=True)
+    last_interaction_date = models.DateField(blank=True, null=True)
 
-
-    sector = models.CharField(max_length=100, blank=True, null=True)
+    sector = models.CharField(max_length=100, choices=SECTOR_CHOICES, blank=True, null=True)
+    sub_sector = models.CharField(max_length=100, blank=True, null=True)
     ARR = models.CharField(max_length=200, blank=True, null=True)
     equity = models.DecimalField(max_digits=100, decimal_places=2, blank=True, null=True)
     debt = models.DecimalField(max_digits=12, decimal_places=2, blank=True, null=True)
