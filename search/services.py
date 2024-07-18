@@ -1,5 +1,6 @@
 import datetime
 import os
+import re
 import gspread
 from typing import List
 from django.conf import settings
@@ -57,13 +58,46 @@ def get_value_or_none(row, field):
     value = row.get(field)
     return value if value else None
 
+def getFormattedRow(row, sheetName):
+    if "WhatsApp Bot" in sheetName:
+        return {
+            **row,
+            "source": "Whatsapp Bot"
+            }
+    if 'Google Drive' in sheetName:
+        formattedRow = {
+            "Company": row.get("Name of the Company"),
+            "Mobile Number": row.get("Mobile Number"),
+            "Founder": row.get("What is your name?"),
+            "About": row.get("What does your company do?"),
+            "Current Status": row.get("Current Status"),
+            "Sector": row.get("Sector"),
+            "SubSector": row.get('Mention if it\'s "Other"'),
+            "Email": row.get("Enter your Email"),
+            "12MRevenue": row.get('Revenue in the last 1 year? (In Rupees) \nEg. 40,00,000'),
+            "Equity": row.get('How much Equity funding have you raised? \n\nAnswer in Rupees \nmention 0 in case of NA'),
+            "Debt": row.get('How much Debt funding have you raised?\n\n*Answer in Rupees \nmention 0 in case of NA*'),
+            "Grants": row.get('How much Grant funding have you raised?\n\n*Answer in Rupees\nmention 0 in case of NA*'),
+            "VideoURL": row.get("Add the video here"),
+            "Language": row.get("Language"),
+            "Nooffounders": row.get("Number of founders (in numbers)"),
+            "TeamSize": row.get("TeamSize"),
+            "City": row.get("City/District"),
+            "State": row.get("State"),
+            "Foundingyear": row.get("When did you start this company? "),
+            "Application Date": datetime.datetime.strptime(row.get("Timestamp"), "%m/%d/%Y %H:%M:%S") ,
+            'source': 'Google Form'
+        }
+        return formattedRow
+
 
 def syncData(sheetName: str):
     from .models import Startup
     from search.models import Source
 
-    if not is_sheet_updated(sheetName):
-        return
+    # if not is_sheet_updated(sheetName):
+    #     print(f"Sheet {sheetName} is up to date")
+    #     return
 
 
     # If sheet is updated
@@ -71,14 +105,23 @@ def syncData(sheetName: str):
     from pprint import pprint
     # print(rows)
     for row in rows:
-        mobileNumber = str(row.get("Mobile Number"))
+
+        row = getFormattedRow(row, sheetName)
+        if not row:
+            continue
+
+        mobileNumber = str(row.get("Mobile Number")).replace(' ', '')
+
 
         if not mobileNumber:
             continue
         if not row.get('Company'):
             continue
-
-        mobileNumber = mobileNumber[2:]
+        mobileNumber = mobileNumber.lstrip('0')
+        
+        if len(mobileNumber) > 10:
+            mobileNumber = mobileNumber[-10:]
+        
         try:
             Startup.objects.get(phone_number=mobileNumber)
             print("ALready",mobileNumber)
@@ -128,8 +171,17 @@ def syncData(sheetName: str):
             currentSector = 'other'
             subSector = sector
 
-        source, created = Source.objects.get_or_create(name="Whatsapp Bot")
+        if row.get('SubSector'):
+            subSector = row.get('SubSector')
+        application_date = None
+        if row.get('Application Date'):
+            application_date = row.get('Application Date')
+
+        source, created = Source.objects.get_or_create(name=row["source"])
         
+        if subSector and len(subSector)> 200:
+            subSector = None
+
         try:
             startup_instance = Startup(
                 name=get_value_or_none(row, 'Company'),
@@ -150,38 +202,41 @@ def syncData(sheetName: str):
                 city=get_value_or_none(row, 'City'),
                 state=get_value_or_none(row, 'State'),
                 founding_year=get_value_or_none(row, 'Foundingyear'),
-                application_date=datetime.datetime.now(),
-                source_name="Whatsapp Bot",
+                application_date=application_date if application_date else datetime.datetime.now(),
+                source_name=row['source'],
                 source=source,
                 source_type="INBOUND",
             )
+            print(f"Saving {startup_instance.name}")
+            startup_instance.save()
 
-        except:
-                startup_as_dict = {
-                "name": row.get('Company'),
-                "mobile_number": mobileNumber,
-                "founder_name": row.get('Founder'),
-                "about": row.get('About'),
-                "current_status": currentStatus,
-                "sector": row.get('Sector'),
-                "ARR": row.get("12MRevenue"),
-                "equity": row.get('Equity'),
-                "debt": row.get('Debt'),
-                "grants": row.get('Grants'),
-                "video_url": row.get('VideoURL'),
-                "language": row.get('Language'),
-                "no_of_founders": row.get('Nooffounders'),
-                "team_size": row.get('TeamSize'),
-                "city": row.get('City'),
-                "state": row.get('State'),
-                "founding_year": row.get('Foundingyear'),
-                "application_date": datetime.datetime.now().isoformat(),
-                }
+        except Exception as e:
+                # startup_as_dict = {
+                # "name": row.get('Company'),
+                # "mobile_number": mobileNumber,
+                # "founder_name": row.get('Founder'),
+                # "about": row.get('About'),
+                # "current_status": currentStatus,
+                # "sector": row.get('Sector'),
+                # "ARR": row.get("12MRevenue"),
+                # "equity": row.get('Equity'),
+                # "debt": row.get('Debt'),
+                # "grants": row.get('Grants'),
+                # "video_url": row.get('VideoURL'),
+                # "language": row.get('Language'),
+                # "no_of_founders": row.get('Nooffounders'),
+                # "team_size": row.get('TeamSize'),
+                # "city": row.get('City'),
+                # "state": row.get('State'),
+                # "founding_year": row.get('Foundingyear'),
+                # "application_date": datetime.datetime.now().isoformat(),
+                # }
                 # print(f"Error in creating instance for {startup_as_dict}")
-                print(row)
+                print(f"Error Creating Startup Instance {e}")
+                pprint(row)
 
                 break
-        print(f"Saving {startup_instance.name}")
-        startup_instance.save()
+        
+        
 
-        # print(f"Saved {startup_instance.name}") 
+
