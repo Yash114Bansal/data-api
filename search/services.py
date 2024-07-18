@@ -4,7 +4,6 @@ import gspread
 from typing import List
 from django.conf import settings
 
-from search.models import Source
 
 def initialize_gspread() -> gspread.client.Client:
     """
@@ -61,6 +60,7 @@ def get_value_or_none(row, field):
 
 def syncData(sheetName: str):
     from .models import Startup
+    from search.models import Source
 
     if not is_sheet_updated(sheetName):
         return
