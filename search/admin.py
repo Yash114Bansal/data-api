@@ -2,6 +2,8 @@ from django.contrib import admin
 from django.contrib.auth import get_user_model
 from django.utils import timezone
 from datetime import timedelta
+
+import requests
 from extras.models import OtherCompanyInfo
 from .models import Company, Director, GSTData, Source, Startup, StartupStatusCounts, Team
 from django.db.models import Count, Q
@@ -149,9 +151,25 @@ class StartupAdmin(admin.ModelAdmin):
                         formfield.widget.render = custom_render
 
         return formfield
+    
+    def is_video_url(self, url):
+        # Check for common video file extensions in the URL
+        video_extensions = ('.mp4', '.avi', '.mov', '.mkv', '.flv', '.wmv', '.webm')
+        if url.lower().endswith(video_extensions):
+            return True
 
+        # Check the Content-Type header to confirm it's a video
+        try:
+            response = requests.head(url, allow_redirects=True)
+            content_type = response.headers.get('Content-Type', '')
+            if 'video' in content_type:
+                return True
+        except requests.RequestException as e:
+            print(f"An error occurred: {e}")
+
+        return False
     def get_preview_html(self, url):
-        if url.endswith(('.mp4', '.mov', '.avi', '.wmv')):
+        if self.is_video_url(url):
             return format_html('<video width="600" controls><source src="{}" type="video/mp4">Your browser does not support the video tag.</video>', url)
         
         elif url.endswith('.pdf'):

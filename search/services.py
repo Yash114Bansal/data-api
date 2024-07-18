@@ -108,6 +108,26 @@ def syncData(sheetName: str):
         elif "knockout" in status:
             currentStatus = 'knockout'
         
+        currentSector = None
+        subSector = None
+
+        sector = row.get("Sector").lower()
+        if 'waste' in sector:
+            currentSector = 'waste_management'
+        elif 'supply' in sector:
+            currentSector = 'supply_chain'
+        elif 'mobility' in sector:
+            currentSector = 'mobility'
+        elif 'agriculture' in sector:
+            currentSector = 'agriculture'
+        elif 'health' in sector:
+            currentSector = 'health'
+        elif 'financial' in sector:
+            currentSector = 'financial_inclusion'
+        else:
+            currentSector = 'other'
+            subSector = sector
+
         source, created = Source.objects.get_or_create(name="Whatsapp Bot")
         
         try:
@@ -117,7 +137,8 @@ def syncData(sheetName: str):
                 founder_name=get_value_or_none(row, 'Founder'),
                 about=get_value_or_none(row, 'About'),
                 current_status=currentStatus if currentStatus else None,
-                sector=get_value_or_none(row, 'Sector'),
+                sector=currentSector,
+                sub_sector=subSector,
                 ARR=get_value_or_none(row, "12MRevenue"),
                 equity=get_value_or_none(row, 'Equity'),
                 debt=get_value_or_none(row, 'Debt'),
