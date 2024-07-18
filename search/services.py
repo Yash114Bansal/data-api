@@ -132,7 +132,7 @@ def syncData(sheetName: str):
                 application_date=datetime.datetime.now(),
                 source_name="Whatsapp Bot",
                 source=source,
-                # source_type="INBOUND",
+                source_type="INBOUND",
             )
 
         except:

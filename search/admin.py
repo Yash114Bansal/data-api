@@ -107,7 +107,7 @@ class StartupAdmin(admin.ModelAdmin):
                 'fields': (
                     'approved_for_investments_comment', 'approved_for_residency_comment', 'in_review_comment', 
                     'ic_comment', 'pre_ic_comment', 'pre_r1_stage_comment', 'r1_comment', 'r2_comment', 
-                    'site_visit_comment', 'to_conduct_r1_comment', 'nomintor_list_comment', 'monitor_comment', 
+                    'site_visit_comment', 'to_conduct_r1_comment', 'monitor_comment', 
                     'rejected_comment', 'additional_comments',
                 ),
             }),
@@ -115,7 +115,7 @@ class StartupAdmin(admin.ModelAdmin):
                 'fields': (
                     'approved_for_investments_date', 'approved_for_residency_date', 'in_review_date', 'ic_date', 
                     'pre_ic_date', 'pre_r1_stage_date', 'r1_date', 'r2_date', 'site_visit_date', 
-                    'to_conduct_r1_date', 'nominator_list_date', 'monitor_date', 'rejected_date', 
+                    'to_conduct_r1_date',  'monitor_date', 'rejected_date', 
                     'knockout_date', 'last_interaction_date','application_date', 'last_edited_on' 
                 ),
             }),

@@ -65,7 +65,6 @@ class Startup(models.Model):
         ('r2', 'R2'),
         ('site_visit', 'Site visit'),
         ('to_conduct_r1', 'To conduct R1'),
-        ('nominator_list', 'Nominator list'),
         ('monitor', 'Monitor'),
         ('rejected', 'Rejected'),
         ('knockout', 'Knockout')
@@ -73,9 +72,9 @@ class Startup(models.Model):
     SECTOR_CHOICES = [
         ('other', "Other"),
         ('waste_management', "Waste Management"),
-        ('rural_supply_chain', "Rural Supply Chain"),
+        ('supply_chain', "Supply Chain"),
         ('mobility', "Mobility"),
-        ('food_and_agriculture', "Food and Agriculture"),
+        ('agriculture', "Agriculture"),
         ('health', "Health"),
         ('financial_inclusion', "Financial Inclusion"),
     ]
@@ -114,7 +113,6 @@ class Startup(models.Model):
     r2_comment = models.TextField(blank=True, null=True)
     site_visit_comment = models.TextField(blank=True, null=True)
     to_conduct_r1_comment = models.TextField(blank=True, null=True)
-    nomintor_list_comment = models.TextField(blank=True, null=True)
     monitor_comment = models.TextField(blank=True, null=True)
     rejected_comment = models.TextField(blank=True, null=True)
 
@@ -128,7 +126,6 @@ class Startup(models.Model):
     r2_date = models.DateField(blank=True, null=True)
     site_visit_date = models.DateField(blank=True, null=True)
     to_conduct_r1_date = models.DateField(blank=True, null=True)
-    nominator_list_date = models.DateField(blank=True, null=True)
     monitor_date = models.DateField(blank=True, null=True)
     rejected_date = models.DateField(blank=True, null=True)
     knockout_date = models.DateField(blank=True, null=True)
