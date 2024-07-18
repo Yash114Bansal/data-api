@@ -4,6 +4,8 @@ import gspread
 from typing import List
 from django.conf import settings
 
+from search.models import Source
+
 def initialize_gspread() -> gspread.client.Client:
     """
     Initialize a gspread client with the given credentials.
@@ -105,7 +107,9 @@ def syncData(sheetName: str):
             currentStatus = 'rejected'
         elif "knockout" in status:
             currentStatus = 'knockout'
-            
+        
+        source, created = Source.objects.get_or_create(name="Whatsapp Bot")
+        
         try:
             startup_instance = Startup(
                 name=get_value_or_none(row, 'Company'),
@@ -127,6 +131,8 @@ def syncData(sheetName: str):
                 founding_year=get_value_or_none(row, 'Foundingyear'),
                 application_date=datetime.datetime.now(),
                 source_name="Whatsapp Bot",
+                source=source,
+                # source_type="INBOUND",
             )
 
         except:
