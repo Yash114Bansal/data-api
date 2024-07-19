@@ -265,8 +265,8 @@ def syncDataTemp(sheetName: str):
         mobileNumber = str(row.get("Mobile Number")).replace(' ', '')
 
 
-        if not mobileNumber:
-            continue
+        # if not mobileNumber:
+        #     continue
         if not row.get('Company'):
             continue
         mobileNumber = mobileNumber.lstrip('0')
@@ -275,8 +275,8 @@ def syncDataTemp(sheetName: str):
             mobileNumber = mobileNumber[-10:]
         
         try:
-            Startup.objects.get(phone_number=mobileNumber)
-            print("ALready",mobileNumber)
+            Startup.objects.get(name=row.get('Company'))
+            print("ALready",row.get('Company'))
             continue
         except Startup.DoesNotExist:
             pass
@@ -372,6 +372,12 @@ def syncDataTemp(sheetName: str):
         
         if subSector and len(subSector)> 200:
             subSector = None
+        nom = row.get('Nominator')
+        source_name=row['source']
+        source_type="INBOUND"
+        if nom:
+            source_type="OUTBOUND"
+            source_name=nom
 
         try:
             startup_instance = Startup(
@@ -394,9 +400,9 @@ def syncDataTemp(sheetName: str):
                 state=get_value_or_none(row, 'State'),
                 founding_year=get_value_or_none(row, 'Foundingyear'),
                 application_date=application_date if application_date else datetime.datetime.now(),
-                source_name=row['source'],
+                source_name=source_name,
                 source=source,
-                source_type="INBOUND",
+                source_type=source_type,
                 stage=currentStage,
                 deal_owner=owner,
                 rejected_comment=commentpp
