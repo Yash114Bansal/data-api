@@ -178,7 +178,7 @@ class Startup(models.Model):
         help_text='Are they Intent driven?',
         choices=YES_NO_CHOICES,
         max_length=3,
-        default='-',
+        default='na',
     )
 
     fund_alignment = models.CharField(
