@@ -82,11 +82,11 @@ class CompanyAdmin(admin.ModelAdmin):
         'email_id', 'address_other_than_registered_office', 'number_of_members', 'active_compliance',
         'suspended_at_stock_exchange', 'nature_of_business', 'status_for_efiling', 'status_under_cirp', 'pan',
     )
-    def get_queryset(self, request):
-        queryset = super().get_queryset(request)
-        if not request.user.is_superuser:
-            queryset = queryset.filter(startup__deal_owner=request.user)
-        return queryset
+    # def get_queryset(self, request):
+    #     queryset = super().get_queryset(request)
+    #     if not request.user.is_superuser:
+    #         queryset = queryset.filter(startup__deal_owner=request.user)
+    #     return queryset
 
     def save_model(self, request, obj, form, change):
         obj.last_edited_by = request.user
@@ -201,14 +201,14 @@ class StartupAdmin(admin.ModelAdmin):
     #     else:
     #         return readonly_fields
     
-    def get_queryset(self, request):
-        queryset = super().get_queryset(request)
-        if not request.user.is_superuser:
-            queryset = queryset.filter(
-                Q(deal_owner=request.user) | Q(deal_viewer__members=request.user)
-            ).distinct()
+    # def get_queryset(self, request):
+    #     queryset = super().get_queryset(request)
+    #     if not request.user.is_superuser:
+    #         queryset = queryset.filter(
+    #             Q(deal_owner=request.user) | Q(deal_viewer__members=request.user)
+    #         ).distinct()
 
-        return queryset
+    #     return queryset
 
     def save_model(self, request, obj, form, change):
         obj.last_edited_by = request.user
