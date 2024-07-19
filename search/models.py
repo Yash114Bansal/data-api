@@ -156,6 +156,9 @@ class Startup(models.Model):
     site_visit_date = models.DateField(
         blank=True, null=True, verbose_name="Site Visit"
     )
+    site_visited_date = models.DateField(
+        blank=True, null=True, verbose_name="Site Visited"
+    )
     to_conduct_r1_date = models.DateField(
         blank=True, null=True, verbose_name="To Conduct Round 1"
     )
@@ -236,6 +239,7 @@ class Startup(models.Model):
             'approved_for_residency': 'approved_for_residency_date',
             'in_review': 'in_review_date',
             'ic': 'ic_date',
+            'site_visit': 'site_visit_date',
             'pre_ic': 'pre_ic_date',
             'pre_r1_stage': 'pre_r1_stage_date',
             'r1': 'r1_date',
