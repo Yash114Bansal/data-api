@@ -99,7 +99,7 @@ class OtherCompanyInfoInline(admin.StackedInline):
 
 @admin.register(Startup)
 class StartupAdmin(admin.ModelAdmin):
-    list_display = ('name', 'founder_name', 'sector', 'ARR', 'current_status','source_name' )
+    list_display = ('name', 'founder_name', 'sector', 'ARR', 'source_name' ,'current_status')
     search_fields = ('name', 'founder_name', 'sector', 'current_status')
     list_filter = ('current_status', 'deal_owner', 'sector')
 
