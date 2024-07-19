@@ -107,7 +107,7 @@ class StartupAdmin(admin.ModelAdmin):
         ('Main Info', {
                 'fields': ('legal_entity', 'name', 'mobile_number', 'founder_name', 'about', 'no_of_founders', 
                         'team_size', 'city', 'state', 'sector', 'sub_sector' ,'ARR', 'founding_year', 'equity', 'debt', 
-                        'grants', 'video_url', 'language', 'current_status', 'last_edited_by', 
+                        'grants', 'video_url', 'language', 'current_status','stage' ,'last_edited_by', 
                         'pitch_deck','attachment1', 'attachment2', 'relevant_link1', 'website' ,'relevant_link2', 
                         'deal_owner', 'deal_viewer', 'source','source_type' ,'source_name','email', 
                         'phone_number','intent_driven', 'fund_alignment', 'community_mindset', 'systemic_change_potential'),

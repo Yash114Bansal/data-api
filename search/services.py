@@ -242,3 +242,193 @@ def syncData(sheetName: str):
         
 
 
+def syncDataTemp(sheetName: str):
+    from .models import Startup
+    from search.models import Source
+
+    # if not is_sheet_updated(sheetName):
+    #     print(f"Sheet {sheetName} is up to date")
+    #     return
+
+
+    # If sheet is updated
+    rows = get_all_rows(sheetName)
+    from pprint import pprint
+    # print(rows)
+    for row in rows:
+        row = {    
+            **row,
+            "source": "Notion"
+        }   
+        
+
+        mobileNumber = str(row.get("Mobile Number")).replace(' ', '')
+
+
+        if not mobileNumber:
+            continue
+        if not row.get('Company'):
+            continue
+        mobileNumber = mobileNumber.lstrip('0')
+        
+        if len(mobileNumber) > 10:
+            mobileNumber = mobileNumber[-10:]
+        
+        try:
+            Startup.objects.get(phone_number=mobileNumber)
+            print("ALready",mobileNumber)
+            continue
+        except Startup.DoesNotExist:
+            pass
+
+        currentStatus = None
+
+        status = row.get("Current Status",'').lower()
+        currentStage = None
+        stage = row.get("Stage")
+
+        if stage:
+            stage = stage.lower()
+        print(stage, "*"*10)
+        if not stage:
+            currentStage = None
+        elif 'seed+' in stage:
+            currentStage = 'seed+'
+        elif 'seed' in stage:
+            currentStage = 'seed'
+        elif 'seriesa' in stage:
+            currentStage = 'series_a'
+        elif 'seriesb' in stage:
+            currentStage = 'series_b'
+        elif 'pre-seed' in stage:
+            currentStage = 'pre_seed'
+        elif 'idea' in stage:
+            currentStage = 'idea_stage'
+        elif 'pre-seriesa' in stage:
+            currentStage = 'pre_series_a'
+        elif 'series c' in stage or 'series c and above' in stage:
+            currentStage = 'series_c_and_above'
+        print(currentStage)
+        # breakpoint()
+    
+        if not status or 'review' in status:
+            currentStatus = 'in_review'
+        elif 'r1' in status:
+            if 'pre' in status:
+                currentStatus = 'pre_r1_stage'
+            elif 'conduct' in status:
+                currentStatus = 'to_conduct_r1'
+            else:
+                currentStatus = 'r1'
+        elif 'r2' in status:
+            currentStatus = 'r2'
+        elif 'visit' in status:
+            currentStatus = 'site_visit'
+        elif "reject" in status:
+            currentStatus = 'rejected'
+        elif "monitor" in status:
+            currentStatus = 'monitor'
+        elif "knockout" in status:
+            currentStatus = 'knockout'
+        
+        commentpp = row.get("Rejection Comments")
+        currentSector = None
+        subSector = None
+
+        sector = row.get("Sector").lower()
+        if 'waste' in sector:
+            currentSector = 'waste_management'
+        elif 'supply' in sector:
+            currentSector = 'supply_chain'
+        elif 'mobility' in sector:
+            currentSector = 'mobility'
+        elif 'agriculture' in sector:
+            currentSector = 'agriculture'
+        elif 'health' in sector:
+            currentSector = 'health'
+        elif 'financial' in sector:
+            currentSector = 'financial_inclusion'
+        else:
+            currentSector = 'other'
+            subSector = sector
+
+        if row.get('SubSector'):
+            subSector = row.get('SubSector')
+        application_date = None
+        if row.get('Application Date'):
+            application_date = row.get('Application Date')
+
+        poc = row.get('POC').replace(' ','').lower().split(',')
+        if poc:
+            poc = poc[0]
+        from django.contrib.auth.models import User
+        owner = None
+        ownera = User.objects.filter(username__icontains=poc)
+
+        if ownera:
+            owner = ownera[0]
+
+        source, created = Source.objects.get_or_create(name=row["source"])
+        
+        if subSector and len(subSector)> 200:
+            subSector = None
+
+        try:
+            startup_instance = Startup(
+                name=get_value_or_none(row, 'Company'),
+                phone_number=mobileNumber if mobileNumber else None,
+                founder_name=get_value_or_none(row, 'Founder'),
+                about=get_value_or_none(row, 'About'),
+                current_status=currentStatus if currentStatus else None,
+                sector=currentSector,
+                sub_sector=subSector,
+                ARR=get_value_or_none(row, "12MRevenue"),
+                equity=get_value_or_none(row, 'Equity'),
+                debt=get_value_or_none(row, 'Debt'),
+                grants=get_value_or_none(row, 'Grants'),
+                video_url=get_value_or_none(row, 'VideoURL'),
+                language=get_value_or_none(row, 'Language'),
+                no_of_founders=get_value_or_none(row, 'Nooffounders'),
+                team_size=get_value_or_none(row, 'TeamSize'),
+                city=get_value_or_none(row, 'City'),
+                state=get_value_or_none(row, 'State'),
+                founding_year=get_value_or_none(row, 'Foundingyear'),
+                application_date=application_date if application_date else datetime.datetime.now(),
+                source_name=row['source'],
+                source=source,
+                source_type="INBOUND",
+                stage=currentStage,
+                deal_owner=owner,
+                rejected_comment=commentpp
+            )
+            # breakpoint()
+            print(f"Saving {startup_instance.name}")
+            startup_instance.save()
+
+        except Exception as e:
+                # startup_as_dict = {
+                # "name": row.get('Company'),
+                # "mobile_number": mobileNumber,
+                # "founder_name": row.get('Founder'),
+                # "about": row.get('About'),
+                # "current_status": currentStatus,
+                # "sector": row.get('Sector'),
+                # "ARR": row.get("12MRevenue"),
+                # "equity": row.get('Equity'),
+                # "debt": row.get('Debt'),
+                # "grants": row.get('Grants'),
+                # "video_url": row.get('VideoURL'),
+                # "language": row.get('Language'),
+                # "no_of_founders": row.get('Nooffounders'),
+                # "team_size": row.get('TeamSize'),
+                # "city": row.get('City'),
+                # "state": row.get('State'),
+                # "founding_year": row.get('Foundingyear'),
+                # "application_date": datetime.datetime.now().isoformat(),
+                # }
+                # print(f"Error in creating instance for {startup_as_dict}")
+                print(f"Error Creating Startup Instance {e}")
+                pprint(row)
+
+                break
+        

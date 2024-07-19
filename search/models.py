@@ -82,13 +82,23 @@ class Startup(models.Model):
     ('INBOUND', 'Inbound'),
     ('OUTBOUND', 'Outbound'),
     ]
-
+    STAGE_CHOICES = [
+        ('idea', "Idea"),
+        ('pre_seed', "Pre-seed"),
+        ('seed', "Seed"),
+        ('seed+', "Seed+"),
+        ('pre_series_a', "Pre-series A"),
+        ('series_a', "Series A"),
+        ('series_b', "Series B"),
+        ('series_c_and_above', "Series C and above"),
+    ]
     legal_entity = models.OneToOneField(Company,on_delete=models.SET_NULL,blank=True, null=True)
     name = models.CharField(max_length=200, null=True, blank=True)
     mobile_number = models.CharField(max_length=15, null=True, blank=True)
     founder_name = models.CharField(max_length=200, null=True, blank=True)
     about = models.TextField(blank=True, null=True)
     current_status = models.CharField(max_length=50, choices=STATUS_CHOICES, blank=True, null=True)
+    stage = models.CharField(max_length=50, choices=STAGE_CHOICES, blank=True, null=True)
     additional_comments = models.TextField(blank=True, null=True)
     attachment1 = models.FileField(upload_to='attachments/', blank=True, null=True)
     attachment2 = models.FileField(upload_to='attachments/', blank=True, null=True)
