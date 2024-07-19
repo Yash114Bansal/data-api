@@ -140,6 +140,8 @@ def syncData(sheetName: str):
         elif 'r1' in status:
             if 'pre' in status:
                 currentStatus = 'pre_r1_stage'
+            elif 'conduct' in status:
+                currentStatus = 'to_conduct_r1'
             else:
                 currentStatus = 'r1'
         elif 'r2' in status:

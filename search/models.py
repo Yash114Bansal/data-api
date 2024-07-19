@@ -188,7 +188,7 @@ class Startup(models.Model):
         super().save(*args, **kwargs)
     
     def __str__(self) -> str:
-        return self.name
+        return self.name if self.name else 'Unnamed Startup'
 
 class Director(models.Model):
     company = models.ForeignKey(Company, related_name='directors', on_delete=models.CASCADE)

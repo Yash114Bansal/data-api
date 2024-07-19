@@ -191,16 +191,16 @@ class StartupAdmin(admin.ModelAdmin):
         else:
             return ''
     
-    def get_readonly_fields(self, request, obj=None):
-        readonly_fields = list(self.readonly_fields)
-        # breakpoint()
-        if request.user.is_superuser or request.user == obj.deal_owner:
-            return readonly_fields
-        elif request.user in obj.deal_viewer.members.all():
-            # return readonly_fields
-            return [field.name for field in obj._meta.fields ]
-        else:
-            return readonly_fields
+    # def get_readonly_fields(self, request, obj=None):
+    #     readonly_fields = list(self.readonly_fields)
+    #     # breakpoint()
+    #     if request.user.is_superuser or request.user == obj.deal_owner:
+    #         return readonly_fields
+    #     elif request.user in obj.deal_viewer.members.all():
+    #         # return readonly_fields
+    #         return [field.name for field in obj._meta.fields ]
+    #     else:
+    #         return readonly_fields
     
     def get_queryset(self, request):
         queryset = super().get_queryset(request)
@@ -213,6 +213,8 @@ class StartupAdmin(admin.ModelAdmin):
 
     def save_model(self, request, obj, form, change):
         obj.last_edited_by = request.user
+        if not request.user.is_superuser:
+            obj.deal_owner = request.user
         super().save_model(request, obj, form, change)
     def render_change_form(self, request, context, add=False, change=False, form_url='', obj=None):
         context.update({
