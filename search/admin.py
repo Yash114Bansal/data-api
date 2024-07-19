@@ -69,6 +69,8 @@ class DirectorInline(admin.StackedInline):
     fields = ('din', 'name', 'designation', 'date_of_appointment', 'address', 'pan', 'no_of_companies', 'father_name', 'dob', 'masked_aadhaar', 'phone_number', 'company_list', 'other_director_info', 'is_sole_proprietor', 'split_address')
     readonly_fields = ('din', 'name')
 
+
+
 @admin.register(Company)
 class CompanyAdmin(admin.ModelAdmin):
     list_display = ('cin', 'name', 'incorporation_date', 'last_agm_date', 'status')
@@ -97,11 +99,39 @@ class OtherCompanyInfoInline(admin.StackedInline):
     can_delete = False
     verbose_name_plural = 'Additional Details'
 
+def mark_as_knockout(modeladmin, request, queryset):
+    for obj in queryset:
+        obj.current_status = 'knockout'
+        obj.knockout_date = timezone.now().date()
+        obj.last_edited_by = request.user
+        obj.last_edited_on = timezone.now()
+        obj.save()
+mark_as_knockout.short_description = "Mark selected Startups as 'knockout'"
+
+def mark_as_pre_r1_stage(modeladmin, request, queryset):
+    for obj in queryset:
+        obj.current_status = 'pre_r1_stage'
+        obj.pre_r1_stage_date = timezone.now().date()
+        obj.last_edited_by = request.user
+        obj.last_edited_on = timezone.now()
+        obj.save()
+mark_as_pre_r1_stage.short_description = "Mark selected Startups as 'Pre-R1 stage'"
+
+def mark_as_rejected(modeladmin, request, queryset):
+    for obj in queryset:
+        obj.current_status = 'rejected'
+        obj.rejected_date = timezone.now().date()
+        obj.last_edited_by = request.user
+        obj.last_edited_on = timezone.now()
+        obj.save()
+mark_as_rejected.short_description = "Mark selected Startups as 'rejected'"
+
 @admin.register(Startup)
 class StartupAdmin(admin.ModelAdmin):
     list_display = ('name', 'founder_name', 'sector', 'ARR', 'source_name' ,'current_status')
     search_fields = ('name', 'founder_name', 'sector', 'current_status')
     list_filter = ('current_status', 'deal_owner', 'sector','source')
+    actions = [mark_as_knockout, mark_as_pre_r1_stage, mark_as_rejected, 'delete_selected']
 
     fieldsets = (
         ('Main', {

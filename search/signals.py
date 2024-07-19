@@ -36,6 +36,8 @@ def send_status_change_notification(sender, instance, **kwargs):
                 cc.append(instance.email)
             send_mail(subject, message, None, [startup_email], cc)
 
-        phone_number = instance.phone_number
+        phone_number = instance.mobile_number
+        if phone_number is None:
+            phone_number = instance.additional_number
         if phone_number:
             sendWhatsappMessage(phone_number, instance.current_status)
