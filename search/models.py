@@ -157,7 +157,7 @@ class Startup(models.Model):
     application_date = models.DateField(blank=True, null=True)
     last_edited_on = models.DateTimeField(auto_now=True)
     email = models.EmailField(null=True, blank=True)
-    phone_number = models.CharField(max_length=10, blank=True, null=True)
+    additional_number = models.CharField(max_length=10, blank=True, null=True)
     
     source_type = models.CharField(
         max_length=8,
