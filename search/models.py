@@ -129,19 +129,46 @@ class Startup(models.Model):
     monitor_comment = models.TextField(blank=True, null=True, verbose_name="Monitor")
     rejected_comment = models.TextField(blank=True, null=True, verbose_name="Rejected")
 
-    approved_for_investments_date = models.DateField(blank=True, null=True)
-    approved_for_residency_date = models.DateField(blank=True, null=True)
-    in_review_date = models.DateField(blank=True, null=True)
-    ic_date = models.DateField(blank=True, null=True)
-    pre_ic_date = models.DateField(blank=True, null=True)
-    pre_r1_stage_date = models.DateField(blank=True, null=True)
-    r1_date = models.DateField(blank=True, null=True)
-    r2_date = models.DateField(blank=True, null=True)
-    site_visit_date = models.DateField(blank=True, null=True)
-    to_conduct_r1_date = models.DateField(blank=True, null=True)
-    monitor_date = models.DateField(blank=True, null=True)
-    rejected_date = models.DateField(blank=True, null=True)
-    knockout_date = models.DateField(blank=True, null=True)
+    approved_for_investments_date = models.DateField(
+        blank=True, null=True, verbose_name="Approved for Investments"
+    )
+    approved_for_residency_date = models.DateField(
+        blank=True, null=True, verbose_name="Approved for Residency"
+    )
+    in_review_date = models.DateField(
+        blank=True, null=True, verbose_name="In Review"
+    )
+    ic_date = models.DateField(
+        blank=True, null=True, verbose_name="IC"
+    )
+    pre_ic_date = models.DateField(
+        blank=True, null=True, verbose_name="Pre-IC"
+    )
+    pre_r1_stage_date = models.DateField(
+        blank=True, null=True, verbose_name="Pre-Round 1 Stage"
+    )
+    r1_date = models.DateField(
+        blank=True, null=True, verbose_name="Round 1"
+    )
+    r2_date = models.DateField(
+        blank=True, null=True, verbose_name="Round 2"
+    )
+    site_visit_date = models.DateField(
+        blank=True, null=True, verbose_name="Site Visit"
+    )
+    to_conduct_r1_date = models.DateField(
+        blank=True, null=True, verbose_name="To Conduct Round 1"
+    )
+    monitor_date = models.DateField(
+        blank=True, null=True, verbose_name="Monitor"
+    )
+    rejected_date = models.DateField(
+        blank=True, null=True, verbose_name="Rejected"
+    )
+    knockout_date = models.DateField(
+        blank=True, null=True, verbose_name="Knockout"
+    )
+
     last_interaction_date = models.DateField(blank=True, null=True)
 
     sector = models.CharField(max_length=100, choices=SECTOR_CHOICES, blank=True, null=True)
@@ -213,7 +240,6 @@ class Startup(models.Model):
             'pre_r1_stage': 'pre_r1_stage_date',
             'r1': 'r1_date',
             'r2': 'r2_date',
-            'site_visit': 'site_visit_date',
             'to_conduct_r1': 'to_conduct_r1_date',
             'monitor': 'monitor_date',
             'rejected': 'rejected_date',

@@ -120,9 +120,9 @@ class StartupAdmin(admin.ModelAdmin):
             }),
             ('Dates', {
                 'fields': (
-                    'in_review_date','to_conduct_r1_date', 'pre_r1_stage_date', 'r1_date', 'r2_date', 'site_visit_date', 'pre_ic_date','ic_date', 
+                    'application_date', 'pre_r1_stage_date', 'r1_date', 'r2_date', 'site_visit_date', 'pre_ic_date','ic_date', 
                     'approved_for_investments_date', 'approved_for_residency_date',  
-                    'monitor_date', 'rejected_date',  'knockout_date', 'last_interaction_date','application_date', 'last_edited_on' 
+                    'knockout_date', 'rejected_date', 'monitor_date','last_interaction_date','last_edited_on' 
                 ),
             }),
             
@@ -130,7 +130,7 @@ class StartupAdmin(admin.ModelAdmin):
     inlines = [OtherCompanyInfoInline]
     
     readonly_fields = (
-            'in_review_date', 'pre_r1_stage_date', 'r1_date', 'r2_date', 'site_visit_date', 
+            'in_review_date', 'pre_r1_stage_date', 'r1_date', 'r2_date',
             'rejected_date', 'last_edited_on', 'last_edited_by',
             'approved_for_investments_date', 'approved_for_residency_date', 'ic_date', 
             'pre_ic_date', 'to_conduct_r1_date', 'monitor_date', 'knockout_date'
