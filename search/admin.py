@@ -95,7 +95,7 @@ class CompanyAdmin(admin.ModelAdmin):
 class OtherCompanyInfoInline(admin.StackedInline):
     model = OtherCompanyInfo
     can_delete = False
-    verbose_name_plural = 'Other Company Info'
+    verbose_name_plural = 'Additional Details'
 
 @admin.register(Startup)
 class StartupAdmin(admin.ModelAdmin):
@@ -104,21 +104,21 @@ class StartupAdmin(admin.ModelAdmin):
     list_filter = ('current_status', 'sector', 'last_edited_on')
 
     fieldsets = (
-        ('Main Info', {
+        ('Main', {
                 'fields': ('legal_entity', 'name','website' , 'founder_name', 'mobile_number', 'additional_number', 'email',  'about', 'no_of_founders', 
                         'team_size', 'city', 'state', 'sector', 'sub_sector' ,'ARR', 'founding_year', 'equity', 'debt', 
                         'grants', 'video_url', 'relevant_link1', 'relevant_link2','pitch_deck', 'attachment1', 'attachment2', 
                         'source','source_type' ,'source_name', 'language','stage' ,'current_status',
                         'intent_driven', 'fund_alignment', 'community_mindset', 'systemic_change_potential' ,'deal_owner', 'deal_viewer','last_edited_by', ),
             }),
-            ('Comments', {
+            ('Internal Notes', {
                 'fields': (
                     'pre_r1_stage_comment','r1_comment', 'r2_comment', 'site_visit_comment','pre_ic_comment',  'ic_comment',  
                     'approved_for_residency_comment', 'approved_for_investments_comment', 
                     'rejected_comment', 'monitor_comment', 'additional_comments',
                 ),
             }),
-            ('Dates', {
+            ('Timeline', {
                 'fields': (
                     'application_date', 'pre_r1_stage_date', 'r1_date', 'r2_date', 'site_visit_date', 'site_visited_date','pre_ic_date','ic_date', 
                     'approved_for_investments_date', 'approved_for_residency_date',  
