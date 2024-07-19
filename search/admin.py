@@ -113,10 +113,9 @@ class StartupAdmin(admin.ModelAdmin):
             }),
             ('Comments', {
                 'fields': (
-                    'approved_for_investments_comment', 'approved_for_residency_comment', 'in_review_comment', 
-                    'ic_comment', 'pre_ic_comment', 'pre_r1_stage_comment', 'r1_comment', 'r2_comment', 
-                    'site_visit_comment', 'to_conduct_r1_comment', 'monitor_comment', 
-                    'rejected_comment', 'additional_comments',
+                    'pre_r1_stage_comment','r1_comment', 'r2_comment', 'site_visit_comment','pre_ic_comment',  'ic_comment',  
+                    'approved_for_residency_comment', 'approved_for_investments_comment', 
+                    'rejected_comment', 'monitor_comment', 'additional_comments',
                 ),
             }),
             ('Dates', {
