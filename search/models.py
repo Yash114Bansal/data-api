@@ -92,6 +92,11 @@ class Startup(models.Model):
         ('series_b', "Series B"),
         ('series_c_and_above', "Series C and above"),
     ]
+    YES_NO_CHOICES = (
+        ('yes', 'Yes'),
+        ('no', 'No'),
+        ('na', 'N/A'),
+    )
     legal_entity = models.OneToOneField(Company,on_delete=models.SET_NULL,blank=True, null=True)
     name = models.CharField(max_length=200, null=True, blank=True)
     mobile_number = models.CharField(max_length=15, null=True, blank=True)
@@ -100,12 +105,12 @@ class Startup(models.Model):
     current_status = models.CharField(max_length=50, choices=STATUS_CHOICES, blank=True, null=True)
     stage = models.CharField(max_length=50, choices=STAGE_CHOICES, blank=True, null=True)
     additional_comments = models.TextField(blank=True, null=True)
-    attachment1 = models.FileField(upload_to='attachments/', blank=True, null=True)
-    attachment2 = models.FileField(upload_to='attachments/', blank=True, null=True)
+    attachment1 = models.FileField(upload_to='attachments/', blank=True, null=True, verbose_name='Additional Attachment')
+    attachment2 = models.FileField(upload_to='attachments/', blank=True, null=True, verbose_name='Additional Attachment')
     pitch_deck = models.FileField(upload_to='attachments/', blank=True, null=True)
     website = models.URLField(max_length=200, blank=True, null=True)
-    relevant_link1 = models.URLField(max_length=200, blank=True, null=True)
-    relevant_link2 = models.URLField(max_length=200, blank=True, null=True)
+    relevant_link1 = models.URLField(max_length=200, blank=True, null=True, verbose_name='Additional Link')
+    relevant_link2 = models.URLField(max_length=200, blank=True, null=True, verbose_name='Additional Link')
     deal_owner = models.ForeignKey(User, related_name='deal_companies', blank=True, on_delete=models.SET_NULL, null=True)
     deal_viewer = models.ForeignKey(Team, blank=True, null=True,on_delete=models.SET_NULL)
     last_edited_by = models.ForeignKey(User, related_name='edited_companies', on_delete=models.SET_NULL, blank=True, null=True)
@@ -167,21 +172,37 @@ class Startup(models.Model):
     )
     # Yes NO Questions
 
-    intent_driven = models.BooleanField(
+
+    intent_driven = models.CharField(
         verbose_name='Intent Driven',
-        help_text='Are they Intent driven?', blank=True, null=True
+        help_text='Are they Intent driven?',
+        choices=YES_NO_CHOICES,
+        max_length=3,
+        default='-',
     )
-    fund_alignment = models.BooleanField(
+
+    fund_alignment = models.CharField(
         verbose_name='Fund Alignment',
-        help_text='Is their business model directly increasing the income of India 2 or India 3?',blank=True, null=True
+        help_text='Is their business model directly increasing the income of India 2 or India 3?',
+        choices=YES_NO_CHOICES,
+        max_length=3,
+        default='na',
     )
-    community_mindset = models.BooleanField(
+
+    community_mindset = models.CharField(
         verbose_name='Community Mindset',
-        help_text='Will they give their time to someone they don`t know, who is seeking advice?',blank=True, null=True
+        help_text='Will they give their time to someone they don`t know, who is seeking advice?',
+        choices=YES_NO_CHOICES,
+        max_length=3,
+        default='na',
     )
-    systemic_change_potential = models.BooleanField(
+
+    systemic_change_potential = models.CharField(
         verbose_name='Systemic Change Potential',
-        help_text='If their business succeeds, will they continue to seek other ways to help solve the same social problem?',blank=True, null=True
+        help_text='If their business succeeds, will they continue to seek other ways to help solve the same social problem?',
+        choices=YES_NO_CHOICES,
+        max_length=3,
+        default='na',
     )
 
     def save(self, *args, **kwargs):
