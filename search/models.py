@@ -205,12 +205,19 @@ class Startup(models.Model):
 
     def save(self, *args, **kwargs):
         status_date_mapping = {
+            'approved_for_investments': 'approved_for_investments_date',
+            'approved_for_residency': 'approved_for_residency_date',
             'in_review': 'in_review_date',
+            'ic': 'ic_date',
+            'pre_ic': 'pre_ic_date',
             'pre_r1_stage': 'pre_r1_stage_date',
             'r1': 'r1_date',
             'r2': 'r2_date',
             'site_visit': 'site_visit_date',
+            'to_conduct_r1': 'to_conduct_r1_date',
+            'monitor': 'monitor_date',
             'rejected': 'rejected_date',
+            'knockout': 'knockout_date'
         }
         if self.current_status in status_date_mapping:
             setattr(self, status_date_mapping[self.current_status], timezone.now().date())

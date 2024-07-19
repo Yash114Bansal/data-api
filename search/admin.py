@@ -120,10 +120,9 @@ class StartupAdmin(admin.ModelAdmin):
             }),
             ('Dates', {
                 'fields': (
-                    'approved_for_investments_date', 'approved_for_residency_date', 'in_review_date', 'ic_date', 
-                    'pre_ic_date', 'pre_r1_stage_date', 'r1_date', 'r2_date', 'site_visit_date', 
-                    'to_conduct_r1_date',  'monitor_date', 'rejected_date', 
-                    'knockout_date', 'last_interaction_date','application_date', 'last_edited_on' 
+                    'in_review_date','to_conduct_r1_date', 'pre_r1_stage_date', 'r1_date', 'r2_date', 'site_visit_date', 'pre_ic_date','ic_date', 
+                    'approved_for_investments_date', 'approved_for_residency_date',  
+                    'monitor_date', 'rejected_date',  'knockout_date', 'last_interaction_date','application_date', 'last_edited_on' 
                 ),
             }),
             
@@ -131,9 +130,11 @@ class StartupAdmin(admin.ModelAdmin):
     inlines = [OtherCompanyInfoInline]
     
     readonly_fields = (
-        'in_review_date', 'pre_r1_stage_date', 'r1_date', 'r2_date', 'site_visit_date', 
-        'rejected_date', 'last_edited_on', 'last_edited_by'
-    )
+            'in_review_date', 'pre_r1_stage_date', 'r1_date', 'r2_date', 'site_visit_date', 
+            'rejected_date', 'last_edited_on', 'last_edited_by',
+            'approved_for_investments_date', 'approved_for_residency_date', 'ic_date', 
+            'pre_ic_date', 'to_conduct_r1_date', 'monitor_date', 'knockout_date'
+        )
     def formfield_for_dbfield(self, db_field, **kwargs):
         formfield = super().formfield_for_dbfield(db_field, **kwargs)
         if db_field.name in ['attachment1', 'attachment2', 'pitch_deck', 'video_url']:
