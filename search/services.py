@@ -95,11 +95,12 @@ def syncData(sheetName: str):
     from .models import Startup
     from search.models import Source
 
-    # if not is_sheet_updated(sheetName):
-    #     print(f"Sheet {sheetName} is up to date")
-    #     return
+    if not is_sheet_updated(sheetName):
+        print(f"Sheet {sheetName} is up to date")
+        return
 
-
+    print("Syncing Data")
+    
     # If sheet is updated
     rows = get_all_rows(sheetName)
     from pprint import pprint
