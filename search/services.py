@@ -123,7 +123,13 @@ def syncData(sheetName: str):
             mobileNumber = mobileNumber[-10:]
         
         try:
-            Startup.objects.get(phone_number=mobileNumber)
+            Startup.objects.get(mobile_number=mobileNumber)
+            print("ALready",mobileNumber)
+            continue
+        except Startup.DoesNotExist:
+            pass
+        try:
+            Startup.objects.get(additional_number=mobileNumber)
             print("ALready",mobileNumber)
             continue
         except Startup.DoesNotExist:
@@ -187,7 +193,7 @@ def syncData(sheetName: str):
         try:
             startup_instance = Startup(
                 name=get_value_or_none(row, 'Company'),
-                phone_number=mobileNumber if mobileNumber else None,
+                mobile_number=mobileNumber if mobileNumber else None,
                 founder_name=get_value_or_none(row, 'Founder'),
                 about=get_value_or_none(row, 'About'),
                 current_status=currentStatus if currentStatus else None,
@@ -382,7 +388,7 @@ def syncDataTemp(sheetName: str):
         try:
             startup_instance = Startup(
                 name=get_value_or_none(row, 'Company'),
-                phone_number=mobileNumber if mobileNumber else None,
+                mobile_number=mobileNumber if mobileNumber else None,
                 founder_name=get_value_or_none(row, 'Founder'),
                 about=get_value_or_none(row, 'About'),
                 current_status=currentStatus if currentStatus else None,
