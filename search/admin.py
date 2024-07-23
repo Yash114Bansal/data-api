@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.contrib.auth import get_user_model
 from django.utils import timezone
 from datetime import timedelta
-
+from django.db.models import Q
 import requests
 from extras.models import OtherCompanyInfo, OtherCompanyInfoDirectInvestments
 from .models import Company, Director, GSTData, Source, Startup, StartupStatusCounts, Team, DirectInvestment, EmailTemplate
@@ -52,6 +52,11 @@ class StartupCountAdmin(admin.ModelAdmin):
                 'monitor': Startup.objects.filter(monitor_date__gte=last_saturday).count(),
                 'rejected': Startup.objects.filter(rejected_date__gte=last_saturday).count(),
                 'knockout': Startup.objects.filter(knockout_date__gte=last_saturday).count(),
+
+                'rejected_after_pre_r1': Startup.objects.filter(current_status__in=['rejected', 'knockout'],r1_date__isnull=True).filter(Q(rejected_date__gte=last_saturday) | Q(knockout_date__gte=last_saturday), ).count(),
+                'rejected_after_r1': Startup.objects.filter(current_status__in=['rejected', 'knockout'], r2_date__isnull=True).filter(Q(rejected_date__gte=last_saturday) | Q(knockout_date__gte=last_saturday), ).count(),
+                'rejected_after_r2': Startup.objects.filter(current_status__in=['rejected', 'knockout'], site_visit_date__isnull=True).filter(Q(rejected_date__gte=last_saturday) | Q(knockout_date__gte=last_saturday), ).count(),
+                'rejected_after_site_visit': Startup.objects.filter(current_status__in=['rejected', 'knockout'], pre_ic_date__isnull=True).filter(Q(rejected_date__gte=last_saturday) | Q(knockout_date__gte=last_saturday), ).count(),                
             }
 
             response.context_data['status_counts'] = overall_counts
