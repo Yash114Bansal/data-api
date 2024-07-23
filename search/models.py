@@ -48,12 +48,12 @@ class Company(models.Model):
 class Team(models.Model):
     name = models.CharField(max_length=200, unique=True)
     members = models.ManyToManyField(User)
+    # link = models.URLField(max_length=200, blank=True, null=True, verbose_name='Calendly Link')
 
     def __str__(self) -> str:
         return self.name
 
-class Startup(models.Model):
-    # New fields for specific statuses
+class EmailTemplate(models.Model):
     STATUS_CHOICES = [
         ('in_review', 'In-review'),
         ('to_conduct_r1', 'To conduct R1'),
@@ -69,6 +69,31 @@ class Startup(models.Model):
         ('rejected', 'Rejected'),
         ('knockout', 'Knockout')
     ]
+
+    status = models.CharField(max_length=50, choices=STATUS_CHOICES, unique=True)
+    subject = models.CharField(max_length=255)
+    body = models.TextField()
+
+    def __str__(self) -> str:
+        return self.status
+
+class Startup(models.Model):
+    # New fields for specific statuses
+    STATUS_CHOICES = [
+        ('in_review', 'In-review'),
+        ('to_conduct_r1', 'To conduct R1'),
+        ('pre_r1_stage', 'Pre-R1 stage'),
+        ('r1', 'R1'),
+        ('site_visit', 'Site visit'),
+        ('r2', 'R2'),
+        ("pre_ic", "Pre-IC"),
+        ('ic', 'IC'),
+        ('approved_for_investments', 'Approved for investments'),
+        ('approved_for_residency', 'Approved for residency'),
+        ('monitor', 'Monitor'),
+        ('rejected', 'Rejected'),
+        ('knockout', 'Knockout')
+    ]
     SECTOR_CHOICES = [
         ('other', "Other"),
         ('waste_management', "Waste Management"),
@@ -78,10 +103,7 @@ class Startup(models.Model):
         ('health', "Health"),
         ('financial_inclusion', "Financial Inclusion"),
     ]
-    INBOUND_OUTBOUND_CHOICES = [
-    ('INBOUND', 'Inbound'),
-    ('OUTBOUND', 'Outbound'),
-    ]
+    
     STAGE_CHOICES = [
         ('idea', "Idea"),
         ('pre_seed', "Pre-seed"),
@@ -192,12 +214,6 @@ class Startup(models.Model):
     email = models.EmailField(null=True, blank=True)
     additional_number = models.CharField(max_length=10, blank=True, null=True)
     
-    source_type = models.CharField(
-        max_length=8,
-        choices=INBOUND_OUTBOUND_CHOICES,
-        blank=True,
-        null=True
-    )
     # Yes NO Questions
 
 
@@ -232,32 +248,42 @@ class Startup(models.Model):
         max_length=3,
         default='na',
     )
-    def clean(self):
-        valid_transitions = {
-            'in_review': ['to_conduct_r1', 'pre_r1_stage','knockout', 'r1', 'rejected'],
-            'to_conduct_r1': ['pre_r1_stage', 'knockout', 'r1', 'rejected'],
-            'pre_r1_stage': ['r1', 'rejected'],
-            'r1': ['r2', 'rejected'],
-            'r2': ['site_visit', 'rejected'],
-            'site_visit': ['pre_ic', 'rejected'],
-            'pre_ic': ['ic', 'rejected'],
-            'ic': ['approved_for_investments', 'approved_for_residency', 'rejected'],
-            'approved_for_investments': ['monitor', 'rejected', 'approved_for_residency'],
-            'approved_for_residency': ['monitor', 'rejected', 'approved_for_investments'],
-            'monitor': ['rejected'],
-            'rejected': [],
-            'knockout': []
-        }
+    # def clean(self):
+        # valid_transitions = {
+        #     'in_review': ['to_conduct_r1', 'pre_r1_stage','knockout', 'r1', 'rejected', 'monitor'],
+        #     'to_conduct_r1': ['pre_r1_stage', 'knockout', 'r1', 'rejected', 'monitor'],
+        #     'pre_r1_stage': ['r1', 'rejected', 'monitor'],
+        #     'r1': ['r2', 'rejected', 'monitor'],
+        #     'r2': ['site_visit', 'rejected', 'monitor'],
+        #     'site_visit': ['pre_ic', 'rejected', 'monitor'],
+        #     'pre_ic': ['ic', 'rejected', 'monitor'],
+        #     'ic': ['approved_for_investments', 'approved_for_residency', 'rejected', 'monitor'],
+        #     'approved_for_investments': ['monitor', 'rejected', 'approved_for_residency', 'monitor'],
+        #     'approved_for_residency': ['monitor', 'rejected', 'approved_for_investments', 'monitor'],
+        #     'monitor': ['rejected'],
+        #     'rejected': [],
+        #     'knockout': []
+        # }
 
-        if self.pk:
-            previous_status = Startup.objects.get(pk=self.pk).current_status
-            if previous_status != self.current_status :
-                if previous_status and self.current_status not in valid_transitions[previous_status]:
-                    raise ValidationError(f"Invalid status transition from {previous_status} to {self.current_status}")
+        # if self.pk:
+        #     previous_status = Startup.objects.get(pk=self.pk).current_status
+        #     if previous_status != self.current_status :
+
+        #         # try:
+        #         #     EmailTemplate.objects.get(status=self.current_status)
+        #         # except EmailTemplate.DoesNotExist:
+        #         #     raise ValidationError(f"Email template not found for status {self.current_status}")
+                
+        #         # this is to check if the status transition is valid
+        #         # if previous_status and self.current_status not in valid_transitions[previous_status]:
+        #         #     raise ValidationError(f"Invalid status transition from {previous_status} to {self.current_status}")
+                
+        #         if not self.deal_viewer:
+        #             raise ValidationError(f"Deal Viewers not set")
 
 
     def save(self, *args, **kwargs):
-        self.clean()
+        # self.clean()
         status_date_mapping = {
             'in_review': 'in_review_date',
             'pre_r1_stage': 'pre_r1_stage_date',
@@ -310,10 +336,6 @@ class DirectInvestment(models.Model):
         ('agriculture', "Agriculture"),
         ('health', "Health"),
         ('financial_inclusion', "Financial Inclusion"),
-    ]
-    INBOUND_OUTBOUND_CHOICES = [
-    ('INBOUND', 'Inbound'),
-    ('OUTBOUND', 'Outbound'),
     ]
     STAGE_CHOICES = [
         ('idea', "Idea"),
@@ -425,12 +447,6 @@ class DirectInvestment(models.Model):
     email = models.EmailField(null=True, blank=True)
     additional_number = models.CharField(max_length=10, blank=True, null=True)
     
-    source_type = models.CharField(
-        max_length=8,
-        choices=INBOUND_OUTBOUND_CHOICES,
-        blank=True,
-        null=True
-    )
     # Yes NO Questions
 
 
@@ -545,4 +561,6 @@ class StartupStatusCounts(Startup):
         proxy = True
         verbose_name = 'Dashboard'
         verbose_name_plural = 'Dashboard'
+
+
 

@@ -5,7 +5,7 @@ from datetime import timedelta
 
 import requests
 from extras.models import OtherCompanyInfo, OtherCompanyInfoDirectInvestments
-from .models import Company, Director, GSTData, Source, Startup, StartupStatusCounts, Team, DirectInvestment
+from .models import Company, Director, GSTData, Source, Startup, StartupStatusCounts, Team, DirectInvestment, EmailTemplate
 from django.db.models import Count, Q
 from django.utils.html import format_html
 User = get_user_model()
@@ -46,8 +46,8 @@ class StartupCountAdmin(admin.ModelAdmin):
                 'ic': Startup.objects.filter(ic_date__gte=last_saturday).count(),
                 'pre_ic': Startup.objects.filter(pre_ic_date__gte=last_saturday).count(),
                 'r1': Startup.objects.filter(r1_date__gte=last_saturday).count(),
-                'r2': Startup.objects.filter(r2_date__gte=last_saturday).count(),
                 'site_visit': Startup.objects.filter(site_visit_date__gte=last_saturday).count(),
+                'r2': Startup.objects.filter(r2_date__gte=last_saturday).count(),
                 'to_conduct_r1': Startup.objects.filter(to_conduct_r1_date__gte=last_saturday).count(),
                 'monitor': Startup.objects.filter(monitor_date__gte=last_saturday).count(),
                 'rejected': Startup.objects.filter(rejected_date__gte=last_saturday).count(),
@@ -143,19 +143,19 @@ class StartupAdmin(admin.ModelAdmin):
                 'fields': ('legal_entity', 'name','website' , 'founder_name', 'mobile_number', 'additional_number', 'email',  'about', 'no_of_founders', 
                         'team_size', 'city', 'state', 'sector', 'sub_sector' ,'ARR', 'founding_year', 'equity', 'debt', 
                         'grants', 'video_url', 'relevant_link1', 'relevant_link2','pitch_deck', 'attachment1', 'attachment2', 
-                        'source','source_type' ,'source_name', 'language','stage' ,'current_status',
+                        'source' ,'source_name', 'language','stage' ,'current_status',
                         'intent_driven', 'fund_alignment', 'community_mindset', 'systemic_change_potential' ,'deal_owner', 'deal_viewer','last_edited_by', ),
             }),
             ('Internal Notes', {
                 'fields': (
-                    'pre_r1_stage_comment','r1_comment', 'r2_comment', 'site_visit_comment','pre_ic_comment',  'ic_comment',  
+                    'pre_r1_stage_comment','r1_comment', 'site_visit_comment', 'r2_comment','pre_ic_comment',  'ic_comment',  
                     'approved_for_residency_comment', 'approved_for_investments_comment', 
                     'rejected_comment', 'monitor_comment', 'additional_comments',
                 ),
             }),
             ('Timeline', {
                 'fields': (
-                    'application_date', 'pre_r1_stage_date', 'r1_date', 'r2_date', 'site_visit_date', 'site_visited_date','pre_ic_date','ic_date', 
+                    'application_date', 'pre_r1_stage_date', 'r1_date',  'site_visit_date','site_visited_date','r2_date', 'pre_ic_date','ic_date', 
                     'approved_for_investments_date', 'approved_for_residency_date',  
                     'knockout_date', 'rejected_date', 'monitor_date','last_interaction_date','last_edited_on' 
                 ),
@@ -165,7 +165,7 @@ class StartupAdmin(admin.ModelAdmin):
     inlines = [OtherCompanyInfoInline]
     
     readonly_fields = (
-            'in_review_date', 'pre_r1_stage_date', 'r1_date', 'r2_date', 'site_visit_date',
+            'in_review_date', 'pre_r1_stage_date', 'r1_date',  'site_visit_date', 'r2_date',
             'rejected_date', 'last_edited_on', 'last_edited_by',
             'approved_for_investments_date', 'approved_for_residency_date', 'ic_date', 
             'pre_ic_date', 'to_conduct_r1_date', 'monitor_date', 'knockout_date'
@@ -279,19 +279,19 @@ class StartupAdmin(admin.ModelAdmin):
                 'fields': ('legal_entity', 'name','website' , 'founder_name', 'mobile_number', 'additional_number', 'email',  'about', 'no_of_founders', 
                         'team_size', 'city', 'state', 'sector', 'sub_sector' ,'ARR', 'founding_year', 'equity', 'debt', 
                         'grants', 'video_url', 'relevant_link1', 'relevant_link2','pitch_deck', 'attachment1', 'attachment2', 
-                        'source','source_type' ,'source_name', 'language','stage' ,'current_status',
+                        'source' ,'source_name', 'language','stage' ,'current_status',
                         'intent_driven', 'fund_alignment', 'community_mindset', 'systemic_change_potential' ,'deal_owner', 'deal_viewer','last_edited_by', ),
             }),
             ('Internal Notes', {
                 'fields': (
-                    'pre_r1_stage_comment','r1_comment', 'r2_comment', 'site_visit_comment','pre_ic_comment',  'ic_comment',  
+                    'pre_r1_stage_comment','r1_comment', 'site_visit_comment', 'r2_comment', 'pre_ic_comment',  'ic_comment',  
                     'approved_for_residency_comment', 'approved_for_investments_comment', 
                     'rejected_comment', 'monitor_comment', 'additional_comments',
                 ),
             }),
             ('Timeline', {
                 'fields': (
-                    'application_date', 'pre_r1_stage_date', 'r1_date', 'r2_date', 'site_visit_date', 'site_visited_date','pre_ic_date','ic_date', 
+                    'application_date', 'pre_r1_stage_date', 'r1_date', 'site_visit_date', 'r2_date', 'site_visited_date','pre_ic_date','ic_date', 
                     'approved_for_investments_date', 'approved_for_residency_date',  
                     'knockout_date', 'rejected_date', 'monitor_date','last_interaction_date','last_edited_on' 
                 ),
@@ -413,3 +413,4 @@ class GSTDataAdmin(admin.ModelAdmin):
 
 admin.site.register(Source)
 admin.site.register(Team)
+admin.site.register(EmailTemplate)

@@ -214,7 +214,6 @@ def syncData(sheetName: str):
                 application_date=application_date if application_date else datetime.datetime.now(),
                 source_name=row['source'],
                 source=source,
-                source_type="INBOUND",
             )
             print(f"Saving {startup_instance.name}")
             startup_instance.save()
@@ -381,11 +380,6 @@ def syncDataTemp(sheetName: str):
             subSector = None
         nom = row.get('Nominator')
         source_name=row['source']
-        source_type="INBOUND"
-        if nom:
-            source_type="OUTBOUND"
-            source_name=nom
-
         try:
             startup_instance = Startup(
                 name=get_value_or_none(row, 'Company'),
@@ -409,7 +403,6 @@ def syncDataTemp(sheetName: str):
                 application_date=application_date if application_date else datetime.datetime.now(),
                 source_name=source_name,
                 source=source,
-                source_type=source_type,
                 stage=currentStage,
                 deal_owner=owner,
                 rejected_comment=commentpp
