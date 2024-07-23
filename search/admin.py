@@ -22,6 +22,8 @@ def get_status_counts_for_source(source: Source):
     overall_counts['Rejected After R2'] = Startup.objects.filter(source=source, current_status__in=['rejected', 'knockout'], r2_date__isnull=False, site_visit_date__isnull=True).count()
     overall_counts['Rejected After Site visit'] = Startup.objects.filter(source=source, current_status__in=['rejected', 'knockout'], site_visit_date__isnull=False, pre_ic_date__isnull=True).count()
 
+    overall_counts['Overall'] = sum(overall_counts.values())
+
     return overall_counts
 
 
@@ -51,6 +53,9 @@ class StartupCountAdmin(admin.ModelAdmin):
             overall_counts['Rejected After R2'] = Startup.objects.filter(current_status__in=['rejected', 'knockout'], r2_date__isnull=False, site_visit_date__isnull=True).count()
             overall_counts['Rejected After Site visit'] = Startup.objects.filter(current_status__in=['rejected', 'knockout'], site_visit_date__isnull=False, pre_ic_date__isnull=True).count()
 
+            overall_counts['Overall'] = sum(overall_counts.values())
+
+
             # Counts for each status since the last Saturday
             last_week_done = {
                 'approved_for_residency': Startup.objects.filter(approved_for_residency_date__gte=last_saturday).count(),
@@ -72,6 +77,7 @@ class StartupCountAdmin(admin.ModelAdmin):
                 'rejected_after_r2': Startup.objects.filter(current_status__in=['rejected', 'knockout'],r2_date__isnull=False ,site_visit_date__isnull=True).filter(Q(rejected_date__gte=last_saturday) | Q(knockout_date__gte=last_saturday), ).count(),
                 'rejected_after_site_visit': Startup.objects.filter(current_status__in=['rejected', 'knockout'],site_visit_date__isnull=False, pre_ic_date__isnull=True).filter(Q(rejected_date__gte=last_saturday) | Q(knockout_date__gte=last_saturday), ).count(),                
             }
+            last_week_done['Overall'] = sum(last_week_done.values())
 
             response.context_data['status_counts'] = overall_counts
             response.context_data['last_week_done'] = last_week_done
