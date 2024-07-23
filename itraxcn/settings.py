@@ -29,7 +29,7 @@ SECRET_KEY = os.environ.get("SECRET_KEY")
 AUTH_KEY = os.environ.get("AUTH_KEY")
 SERRI_API_KEY = os.environ.get("SERRI_API_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ["0.0.0.0","127.0.0.1"]
 ALLOWED_HOST = os.environ.get("ALLOWED_HOST")
