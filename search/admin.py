@@ -2,13 +2,27 @@ from django.contrib import admin
 from django.contrib.auth import get_user_model
 from django.utils import timezone
 from datetime import timedelta
-from django.db.models import Q
 import requests
 from extras.models import OtherCompanyInfo, OtherCompanyInfoDirectInvestments
 from .models import Company, Director, GSTData, Source, Startup, StartupStatusCounts, Team, DirectInvestment, EmailTemplate
 from django.db.models import Count, Q
 from django.utils.html import format_html
 User = get_user_model()
+
+def get_status_counts_for_source(source: Source):
+    # Overall status counts for the source
+    status_choices = dict(Startup.STATUS_CHOICES)
+    status_counts = Startup.objects.filter(source=source).values('current_status').annotate(count=Count('id'))
+    status_counts_dict = {item['current_status']: item['count'] for item in status_counts}
+
+    # Initialize counts for all statuses to ensure all are present
+    overall_counts = {status: status_counts_dict.get(status, 0) for status in status_choices.keys()}
+    overall_counts['Rejected After Pre R1'] = Startup.objects.filter(source=source, current_status__in=['rejected', 'knockout'], pre_r1_stage_date__isnull=False, r1_date__isnull=True).count()
+    overall_counts['Rejected After R1'] = Startup.objects.filter(source=source, current_status__in=['rejected', 'knockout'], r1_date__isnull=False, r2_date__isnull=True).count()
+    overall_counts['Rejected After R2'] = Startup.objects.filter(source=source, current_status__in=['rejected', 'knockout'], r2_date__isnull=False, site_visit_date__isnull=True).count()
+    overall_counts['Rejected After Site visit'] = Startup.objects.filter(source=source, current_status__in=['rejected', 'knockout'], site_visit_date__isnull=False, pre_ic_date__isnull=True).count()
+
+    return overall_counts
 
 
 @admin.register(StartupStatusCounts)
@@ -61,6 +75,11 @@ class StartupCountAdmin(admin.ModelAdmin):
 
             response.context_data['status_counts'] = overall_counts
             response.context_data['last_week_done'] = last_week_done
+
+            sources = Source.objects.all()
+            source_status_counts = {source.name: get_status_counts_for_source(source) for source in sources}
+
+            response.context_data['source_status_counts'] = source_status_counts
 
         return response
 

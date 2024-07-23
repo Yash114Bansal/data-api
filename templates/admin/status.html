@@ -58,7 +58,7 @@
 
         .subtile .status-value {
             color: #555;
-            font-size: 35px;
+            font-size: 25px;
         }
 
         .paginator {
@@ -94,6 +94,20 @@
                 </div>
             {% endfor %}
         </div>
+
+        {% if source_status_counts %}
+            {% for source, counts in source_status_counts.items %}
+                <div class="tile">
+                    <h2>Status Counts for {{ source }}</h2>
+                    {% for status, count in counts.items %}
+                        <div class="subtile">
+                            <span class="status-key">{{ status|capfirst }}:</span>
+                            <span class="status-value">{{ count }}</span>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endfor %}
+        {% endif %}
     </div>
 {% endblock %}
 
