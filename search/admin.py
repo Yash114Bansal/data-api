@@ -53,10 +53,10 @@ class StartupCountAdmin(admin.ModelAdmin):
                 'rejected': Startup.objects.filter(rejected_date__gte=last_saturday).count(),
                 'knockout': Startup.objects.filter(knockout_date__gte=last_saturday).count(),
 
-                'rejected_after_pre_r1': Startup.objects.filter(current_status__in=['rejected', 'knockout'],r1_date__isnull=True).filter(Q(rejected_date__gte=last_saturday) | Q(knockout_date__gte=last_saturday), ).count(),
-                'rejected_after_r1': Startup.objects.filter(current_status__in=['rejected', 'knockout'], r2_date__isnull=True).filter(Q(rejected_date__gte=last_saturday) | Q(knockout_date__gte=last_saturday), ).count(),
-                'rejected_after_r2': Startup.objects.filter(current_status__in=['rejected', 'knockout'], site_visit_date__isnull=True).filter(Q(rejected_date__gte=last_saturday) | Q(knockout_date__gte=last_saturday), ).count(),
-                'rejected_after_site_visit': Startup.objects.filter(current_status__in=['rejected', 'knockout'], pre_ic_date__isnull=True).filter(Q(rejected_date__gte=last_saturday) | Q(knockout_date__gte=last_saturday), ).count(),                
+                'rejected_after_pre_r1': Startup.objects.filter(current_status__in=['rejected', 'knockout'],r1_date__isnull=True, pre_r1_stage_date__isnull=False).filter(Q(rejected_date__gte=last_saturday) | Q(knockout_date__gte=last_saturday), ).count(),
+                'rejected_after_r1': Startup.objects.filter(current_status__in=['rejected', 'knockout'], r2_date__isnull=True, r1_date__isnull=False).filter(Q(rejected_date__gte=last_saturday) | Q(knockout_date__gte=last_saturday), ).count(),
+                'rejected_after_r2': Startup.objects.filter(current_status__in=['rejected', 'knockout'],r2_date__isnull=False ,site_visit_date__isnull=True).filter(Q(rejected_date__gte=last_saturday) | Q(knockout_date__gte=last_saturday), ).count(),
+                'rejected_after_site_visit': Startup.objects.filter(current_status__in=['rejected', 'knockout'],site_visit_date__isnull=False, pre_ic_date__isnull=True).filter(Q(rejected_date__gte=last_saturday) | Q(knockout_date__gte=last_saturday), ).count(),                
             }
 
             response.context_data['status_counts'] = overall_counts
