@@ -10,21 +10,29 @@ from django.utils.html import format_html
 User = get_user_model()
 
 def get_status_counts_for_source(source: Source):
-    # Overall status counts for the source
-    status_choices = dict(Startup.STATUS_CHOICES)
-    status_counts = Startup.objects.filter(source=source).values('current_status').annotate(count=Count('id'))
-    status_counts_dict = {item['current_status']: item['count'] for item in status_counts}
+        # Overall status counts for the source
+        overall_counts = {
+                        'In Review': Startup.objects.filter(current_status="in_review").filter(source=source).count(),
+                        'Rejected': Startup.objects.filter(current_status="rejected").filter(source=source).count(),
+                        'To Conduct R1': Startup.objects.filter(current_status="to_conduct_r1").filter(source=source).count(),
+                        'Pre-R1 Stage': Startup.objects.filter(current_status="pre_r1_stage").filter(source=source).count(),
+                        'Rejected After Pre-R1 Stage': Startup.objects.filter(current_status__in=['rejected', 'knockout'], pre_r1_stage_date__isnull=False, r1_date__isnull=True).filter(source=source).count(),
+                        'R1 Stage': Startup.objects.filter(current_status="r1").filter(source=source).count(),
+                        'Rejected After R1 Stage': Startup.objects.filter(current_status__in=['rejected', 'knockout'], r1_date__isnull=False, r2_date__isnull=True).filter(source=source).count(),
+                        'Site Visit': Startup.objects.filter(current_status="site_visit").filter(source=source).count(),
+                        'Rejected After Site visit' : Startup.objects.filter(current_status__in=['rejected', 'knockout'], site_visit_date__isnull=False, pre_ic_date__isnull=True).filter(source=source).count(),
+                        'R2 Stage': Startup.objects.filter(current_status="r2").filter(source=source).count(),
+                        'Rejected After R2': Startup.objects.filter(current_status__in=['rejected', 'knockout'], r2_date__isnull=False, site_visit_date__isnull=True).filter(source=source).count(),
+                        'Pre IC': Startup.objects.filter(current_status="pre_ic").filter(source=source).count(),
+                        'IC': Startup.objects.filter(current_status="ic").filter(source=source).count(),
+                        'Approved For Residency': Startup.objects.filter(current_status="approved_for_residency").filter(source=source).count(),
+                        'Approved For Investments': Startup.objects.filter(current_status="approved_for_investments").filter(source=source).count(),
+                        'Monitor': Startup.objects.filter(current_status="monitor").filter(source=source).count(),
+                        'Knockout': Startup.objects.filter(current_status="knockout").filter(source=source).count(),
+                    }
+        overall_counts = {"Total Applications": sum(overall_counts.values()), **overall_counts}
 
-    # Initialize counts for all statuses to ensure all are present
-    overall_counts = {status: status_counts_dict.get(status, 0) for status in status_choices.keys()}
-    overall_counts['Rejected After Pre R1'] = Startup.objects.filter(source=source, current_status__in=['rejected', 'knockout'], pre_r1_stage_date__isnull=False, r1_date__isnull=True).count()
-    overall_counts['Rejected After R1'] = Startup.objects.filter(source=source, current_status__in=['rejected', 'knockout'], r1_date__isnull=False, r2_date__isnull=True).count()
-    overall_counts['Rejected After R2'] = Startup.objects.filter(source=source, current_status__in=['rejected', 'knockout'], r2_date__isnull=False, site_visit_date__isnull=True).count()
-    overall_counts['Rejected After Site visit'] = Startup.objects.filter(source=source, current_status__in=['rejected', 'knockout'], site_visit_date__isnull=False, pre_ic_date__isnull=True).count()
-
-    overall_counts['Overall'] = sum(overall_counts.values())
-
-    return overall_counts
+        return overall_counts
 
 
 @admin.register(StartupStatusCounts)
@@ -43,41 +51,53 @@ class StartupCountAdmin(admin.ModelAdmin):
             status_choices = dict(Startup.STATUS_CHOICES)
 
             # Get overall counts
-            status_counts = Startup.objects.values('current_status').annotate(count=Count('id'))
-            status_counts_dict = {item['current_status']: item['count'] for item in status_counts}
-            
-            # Initialize counts for all statuses to ensure all are present
-            overall_counts = {status: status_counts_dict.get(status, 0) for status in status_choices.keys()}
-            overall_counts['Rejected After Pre R1'] = Startup.objects.filter(current_status__in=['rejected', 'knockout'], pre_r1_stage_date__isnull=False, r1_date__isnull=True).count()
-            overall_counts['Rejected After R1'] = Startup.objects.filter(current_status__in=['rejected', 'knockout'], r1_date__isnull=False, r2_date__isnull=True).count()
-            overall_counts['Rejected After R2'] = Startup.objects.filter(current_status__in=['rejected', 'knockout'], r2_date__isnull=False, site_visit_date__isnull=True).count()
-            overall_counts['Rejected After Site visit'] = Startup.objects.filter(current_status__in=['rejected', 'knockout'], site_visit_date__isnull=False, pre_ic_date__isnull=True).count()
+            overall_counts = {
+                'In Review': Startup.objects.filter(current_status="in_review").count(),
+                'Rejected': Startup.objects.filter(current_status="rejected").count(),
+                'To Conduct R1': Startup.objects.filter(current_status="to_conduct_r1").count(),
+                'Pre-R1 Stage': Startup.objects.filter(current_status="pre_r1_stage").count(),
+                'Rejected After Pre-R1 Stage': Startup.objects.filter(current_status__in=['rejected', 'knockout'], pre_r1_stage_date__isnull=False, r1_date__isnull=True).count(),
+                'R1 Stage': Startup.objects.filter(current_status="r1").count(),
+                'Rejected After R1 Stage': Startup.objects.filter(current_status__in=['rejected', 'knockout'], r1_date__isnull=False, r2_date__isnull=True).count(),
+                'Site Visit': Startup.objects.filter(current_status="site_visit").count(),
+                'Rejected After Site visit' : Startup.objects.filter(current_status__in=['rejected', 'knockout'], site_visit_date__isnull=False, pre_ic_date__isnull=True).count(),
+                'R2 Stage': Startup.objects.filter(current_status="r2").count(),
+                'Rejected After R2': Startup.objects.filter(current_status__in=['rejected', 'knockout'], r2_date__isnull=False, site_visit_date__isnull=True).count(),
+                'Pre IC': Startup.objects.filter(current_status="pre_ic").count(),
+                'IC': Startup.objects.filter(current_status="ic").count(),
+                'Approved For Residency': Startup.objects.filter(current_status="approved_for_residency").count(),
+                'Approved For Investments': Startup.objects.filter(current_status="approved_for_investments").count(),
+                'Monitor': Startup.objects.filter(current_status="monitor").count(),
+                'Knockout': Startup.objects.filter(current_status="knockout").count(),
+            }
 
-            overall_counts['Overall'] = sum(overall_counts.values())
+            overall_counts = {"Total Applications": sum(overall_counts.values()), **overall_counts}
+
 
 
             # Counts for each status since the last Saturday
             last_week_done = {
-                'in_review': Startup.objects.filter(in_review_date__gte=last_saturday).count(),
-                'to_conduct_r1': Startup.objects.filter(to_conduct_r1_date__gte=last_saturday).count(),
-                'pre_r1_stage': Startup.objects.filter(pre_r1_stage_date__gte=last_saturday).count(),
-                'r1': Startup.objects.filter(r1_date__gte=last_saturday).count(),
-                'site_visit': Startup.objects.filter(site_visit_date__gte=last_saturday).count(),
-                'r2': Startup.objects.filter(r2_date__gte=last_saturday).count(),
-                'pre_ic': Startup.objects.filter(pre_ic_date__gte=last_saturday).count(),
-                'ic': Startup.objects.filter(ic_date__gte=last_saturday).count(),
-                'approved_for_residency': Startup.objects.filter(approved_for_residency_date__gte=last_saturday).count(),
-                'approved_for_investments': Startup.objects.filter(approved_for_investments_date__gte=last_saturday).count(),
-                'monitor': Startup.objects.filter(monitor_date__gte=last_saturday).count(),
-                'rejected': Startup.objects.filter(rejected_date__gte=last_saturday).count(),
-                'knockout': Startup.objects.filter(knockout_date__gte=last_saturday).count(),
-
-                'rejected_after_pre_r1': Startup.objects.filter(current_status__in=['rejected', 'knockout'],r1_date__isnull=True, pre_r1_stage_date__isnull=False).filter(Q(rejected_date__gte=last_saturday) | Q(knockout_date__gte=last_saturday), ).count(),
-                'rejected_after_r1': Startup.objects.filter(current_status__in=['rejected', 'knockout'], r2_date__isnull=True, r1_date__isnull=False).filter(Q(rejected_date__gte=last_saturday) | Q(knockout_date__gte=last_saturday), ).count(),
-                'rejected_after_r2': Startup.objects.filter(current_status__in=['rejected', 'knockout'],r2_date__isnull=False ,site_visit_date__isnull=True).filter(Q(rejected_date__gte=last_saturday) | Q(knockout_date__gte=last_saturday), ).count(),
-                'rejected_after_site_visit': Startup.objects.filter(current_status__in=['rejected', 'knockout'],site_visit_date__isnull=False, pre_ic_date__isnull=True).filter(Q(rejected_date__gte=last_saturday) | Q(knockout_date__gte=last_saturday), ).count(),                
+                'In Review': Startup.objects.filter(in_review_date__gte=last_saturday).count(),
+                'Rejected': Startup.objects.filter(rejected_date__gte=last_saturday).count(),
+                'To Conduct R1': Startup.objects.filter(to_conduct_r1_date__gte=last_saturday).count(),
+                'Pre-R1 Stage': Startup.objects.filter(pre_r1_stage_date__gte=last_saturday).count(),
+                'Rejected After Pre-R1 Stage': Startup.objects.filter(current_status__in=['rejected', 'knockout'], r1_date__isnull=True, pre_r1_stage_date__isnull=False).filter(Q(rejected_date__gte=last_saturday) | Q(knockout_date__gte=last_saturday)).count(),
+                'R1 Stage': Startup.objects.filter(r1_date__gte=last_saturday).count(),
+                'Rejected After R1 Stage': Startup.objects.filter(current_status__in=['rejected', 'knockout'], r2_date__isnull=True, r1_date__isnull=False).filter(Q(rejected_date__gte=last_saturday) | Q(knockout_date__gte=last_saturday)).count(),
+                'Site Visit': Startup.objects.filter(site_visit_date__gte=last_saturday).count(),
+                'Rejected After Site Visit': Startup.objects.filter(current_status__in=['rejected', 'knockout'], site_visit_date__isnull=False, pre_ic_date__isnull=True).filter(Q(rejected_date__gte=last_saturday) | Q(knockout_date__gte=last_saturday)).count(),
+                'R2 Stage': Startup.objects.filter(r2_date__gte=last_saturday).count(),
+                'Rejected After R2 Stage': Startup.objects.filter(current_status__in=['rejected', 'knockout'], r2_date__isnull=False, site_visit_date__isnull=True).filter(Q(rejected_date__gte=last_saturday) | Q(knockout_date__gte=last_saturday)).count(),
+                'Pre IC': Startup.objects.filter(pre_ic_date__gte=last_saturday).count(),
+                'IC': Startup.objects.filter(ic_date__gte=last_saturday).count(),
+                'Approved For Residency': Startup.objects.filter(approved_for_residency_date__gte=last_saturday).count(),
+                'Approved For Investments': Startup.objects.filter(approved_for_investments_date__gte=last_saturday).count(),
+                'Monitor': Startup.objects.filter(monitor_date__gte=last_saturday).count(),
+                'Knockout': Startup.objects.filter(knockout_date__gte=last_saturday).count(),
             }
-            last_week_done['Overall'] = sum(last_week_done.values())
+
+
+            last_week_done = {"Total Applications": sum(last_week_done.values()), **last_week_done}
 
             response.context_data['status_counts'] = overall_counts
             response.context_data['last_week_done'] = last_week_done
