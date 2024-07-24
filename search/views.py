@@ -222,7 +222,7 @@ class GSTService:
                 
             )
         return gst_data_obj
-
+@csrf_exempt
 def search_company(request):
     if request.method == 'POST':
         company_name = request.POST.get('company_name')
