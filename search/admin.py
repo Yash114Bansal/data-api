@@ -163,14 +163,14 @@ def mark_as_knockout(modeladmin, request, queryset):
         obj.save()
 mark_as_knockout.short_description = "Mark selected Startups as 'knockout'"
 
-def mark_as_pre_r1_stage(modeladmin, request, queryset):
+def mark_as_r1_stage(modeladmin, request, queryset):
     for obj in queryset:
-        obj.current_status = 'pre_r1_stage'
-        obj.pre_r1_stage_date = timezone.now().date()
+        obj.current_status = 'r1'
+        obj.pre_r1_date = timezone.now().date()
         obj.last_edited_by = request.user
         obj.last_edited_on = timezone.now()
         obj.save()
-mark_as_pre_r1_stage.short_description = "Mark selected Startups as 'Pre-R1 stage'"
+mark_as_r1_stage.short_description = "Mark selected Startups as 'R1 stage'"
 
 def mark_as_rejected(modeladmin, request, queryset):
     for obj in queryset:
