@@ -58,16 +58,16 @@ class StartupCountAdmin(admin.ModelAdmin):
 
             # Counts for each status since the last Saturday
             last_week_done = {
-                'approved_for_residency': Startup.objects.filter(approved_for_residency_date__gte=last_saturday).count(),
-                'approved_for_investments': Startup.objects.filter(approved_for_investments_date__gte=last_saturday).count(),
                 'in_review': Startup.objects.filter(in_review_date__gte=last_saturday).count(),
+                'to_conduct_r1': Startup.objects.filter(to_conduct_r1_date__gte=last_saturday).count(),
                 'pre_r1_stage': Startup.objects.filter(pre_r1_stage_date__gte=last_saturday).count(),
-                'ic': Startup.objects.filter(ic_date__gte=last_saturday).count(),
-                'pre_ic': Startup.objects.filter(pre_ic_date__gte=last_saturday).count(),
                 'r1': Startup.objects.filter(r1_date__gte=last_saturday).count(),
                 'site_visit': Startup.objects.filter(site_visit_date__gte=last_saturday).count(),
                 'r2': Startup.objects.filter(r2_date__gte=last_saturday).count(),
-                'to_conduct_r1': Startup.objects.filter(to_conduct_r1_date__gte=last_saturday).count(),
+                'pre_ic': Startup.objects.filter(pre_ic_date__gte=last_saturday).count(),
+                'ic': Startup.objects.filter(ic_date__gte=last_saturday).count(),
+                'approved_for_residency': Startup.objects.filter(approved_for_residency_date__gte=last_saturday).count(),
+                'approved_for_investments': Startup.objects.filter(approved_for_investments_date__gte=last_saturday).count(),
                 'monitor': Startup.objects.filter(monitor_date__gte=last_saturday).count(),
                 'rejected': Startup.objects.filter(rejected_date__gte=last_saturday).count(),
                 'knockout': Startup.objects.filter(knockout_date__gte=last_saturday).count(),
