@@ -88,6 +88,9 @@ def getFormattedRow(row, sheetName):
             "Application Date": datetime.datetime.strptime(row.get("Timestamp"), "%m/%d/%Y %H:%M:%S") ,
             'source': 'Google Form'
         }
+        if not formattedRow.get('Mobile Number') and row.get("Enter your phone number"):
+            formattedRow['Mobile Number'] = row.get("Enter your phone number")
+            
         return formattedRow
 
 
