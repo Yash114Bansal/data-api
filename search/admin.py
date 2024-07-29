@@ -297,8 +297,8 @@ class StartupAdmin(admin.ModelAdmin):
 
     def save_model(self, request, obj, form, change):
         obj.last_edited_by = request.user
-        if not request.user.is_superuser:
-            obj.deal_owner = request.user
+        # if not request.user.is_superuser:
+        #     obj.deal_owner = request.user
         super().save_model(request, obj, form, change)
     def render_change_form(self, request, context, add=False, change=False, form_url='', obj=None):
         context.update({
@@ -433,8 +433,8 @@ class StartupAdmin(admin.ModelAdmin):
 
     def save_model(self, request, obj, form, change):
         obj.last_edited_by = request.user
-        if not request.user.is_superuser:
-            obj.deal_owner = request.user
+        # if obj.deal_owner is None:
+        #     obj.deal_owner = request.user
         super().save_model(request, obj, form, change)
     def render_change_form(self, request, context, add=False, change=False, form_url='', obj=None):
         context.update({
