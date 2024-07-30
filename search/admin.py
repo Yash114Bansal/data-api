@@ -9,15 +9,16 @@ from django.db.models import Count, Q
 from django.utils.html import format_html
 User = get_user_model()
 
+
 def get_status_counts_for_source(source: Source):
         # Overall status counts for the source
         overall_counts = {
                         'In Review': Startup.objects.filter(current_status="in_review").filter(source=source).count(),
                         'Rejected': Startup.objects.filter(current_status="rejected").filter(source=source).count(),
-                        'To Conduct R1': Startup.objects.filter(current_status="to_conduct_r1").filter(source=source).count(),
                         'Pre-R1 Stage': Startup.objects.filter(current_status="pre_r1_stage").filter(source=source).count(),
                         'Rejected After Pre-R1 Stage': Startup.objects.filter(current_status__in=['rejected', 'knockout'], pre_r1_stage_date__isnull=False, r1_date__isnull=True).filter(source=source).count(),
                         'R1 Stage': Startup.objects.filter(current_status="r1").filter(source=source).count(),
+                        'Scheduled R1': Startup.objects.filter(current_status="scheduled_r1").filter(source=source).count(),
                         'Rejected After R1 Stage': Startup.objects.filter(current_status__in=['rejected', 'knockout'], r1_date__isnull=False, r2_date__isnull=True).filter(source=source).count(),
                         'Site Visit': Startup.objects.filter(current_status="site_visit").filter(source=source).count(),
                         'Rejected After Site visit' : Startup.objects.filter(current_status__in=['rejected', 'knockout'], site_visit_date__isnull=False, pre_ic_date__isnull=True).filter(source=source).count(),
@@ -54,10 +55,10 @@ class StartupCountAdmin(admin.ModelAdmin):
             overall_counts = {
                 'In Review': Startup.objects.filter(current_status="in_review").count(),
                 'Rejected': Startup.objects.filter(current_status="rejected").count(),
-                'To Conduct R1': Startup.objects.filter(current_status="to_conduct_r1").count(),
                 'Pre-R1 Stage': Startup.objects.filter(current_status="pre_r1_stage").count(),
                 'Rejected After Pre-R1 Stage': Startup.objects.filter(current_status__in=['rejected', 'knockout'], pre_r1_stage_date__isnull=False, r1_date__isnull=True).count(),
                 'R1 Stage': Startup.objects.filter(current_status="r1").count(),
+                'Scheduled R1': Startup.objects.filter(current_status="scheduled_r1").count(),
                 'Rejected After R1 Stage': Startup.objects.filter(current_status__in=['rejected', 'knockout'], r1_date__isnull=False, r2_date__isnull=True).count(),
                 'Site Visit': Startup.objects.filter(current_status="site_visit").count(),
                 'Rejected After Site visit' : Startup.objects.filter(current_status__in=['rejected', 'knockout'], site_visit_date__isnull=False, pre_ic_date__isnull=True).count(),
@@ -79,10 +80,10 @@ class StartupCountAdmin(admin.ModelAdmin):
             last_week_done = {
                 'In Review': Startup.objects.filter(in_review_date__gte=last_saturday).count(),
                 'Rejected': Startup.objects.filter(rejected_date__gte=last_saturday).count(),
-                'To Conduct R1': Startup.objects.filter(to_conduct_r1_date__gte=last_saturday).count(),
                 'Pre-R1 Stage': Startup.objects.filter(pre_r1_stage_date__gte=last_saturday).count(),
                 'Rejected After Pre-R1 Stage': Startup.objects.filter(current_status__in=['rejected', 'knockout'], r1_date__isnull=True, pre_r1_stage_date__isnull=False).filter(Q(rejected_date__gte=last_saturday) | Q(knockout_date__gte=last_saturday)).count(),
                 'R1 Stage': Startup.objects.filter(r1_date__gte=last_saturday).count(),
+                'Scheduled R1': Startup.objects.filter(scheduled_r1_date__gte=last_saturday).count(),
                 'Rejected After R1 Stage': Startup.objects.filter(current_status__in=['rejected', 'knockout'], r2_date__isnull=True, r1_date__isnull=False).filter(Q(rejected_date__gte=last_saturday) | Q(knockout_date__gte=last_saturday)).count(),
                 'Site Visit': Startup.objects.filter(site_visit_date__gte=last_saturday).count(),
                 'Rejected After Site Visit': Startup.objects.filter(current_status__in=['rejected', 'knockout'], site_visit_date__isnull=False, pre_ic_date__isnull=True).filter(Q(rejected_date__gte=last_saturday) | Q(knockout_date__gte=last_saturday)).count(),
@@ -226,7 +227,7 @@ class StartupAdmin(admin.ModelAdmin):
             'in_review_date', 'pre_r1_stage_date', 'r1_date',  'site_visit_date', 'r2_date',
             'rejected_date', 'last_edited_on', 'last_edited_by',
             'approved_for_investments_date', 'approved_for_residency_date', 'ic_date', 
-            'pre_ic_date', 'to_conduct_r1_date', 'monitor_date', 'knockout_date'
+            'pre_ic_date', 'scheduled_r1_date', 'monitor_date', 'knockout_date'
         )
     def formfield_for_dbfield(self, db_field, **kwargs):
         formfield = super().formfield_for_dbfield(db_field, **kwargs)
@@ -362,7 +363,7 @@ class StartupAdmin(admin.ModelAdmin):
             'in_review_date', 'pre_r1_stage_date', 'r1_date', 'r2_date', 'site_visit_date',
             'rejected_date', 'last_edited_on', 'last_edited_by',
             'approved_for_investments_date', 'approved_for_residency_date', 'ic_date', 
-            'pre_ic_date', 'to_conduct_r1_date', 'monitor_date', 'knockout_date'
+            'pre_ic_date', 'scheduled_r1_date', 'monitor_date', 'knockout_date'
         )
     def formfield_for_dbfield(self, db_field, **kwargs):
         formfield = super().formfield_for_dbfield(db_field, **kwargs)
