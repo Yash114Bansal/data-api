@@ -9,7 +9,6 @@ from django.db.models import Count, Q
 from django.utils.html import format_html
 User = get_user_model()
 
-
 def get_status_counts_for_source(source: Source):
         # Overall status counts for the source
         overall_counts = {
@@ -214,7 +213,7 @@ class StartupAdmin(admin.ModelAdmin):
             }),
             ('Timeline', {
                 'fields': (
-                    'application_date', 'pre_r1_stage_date', 'r1_date',  'site_visit_date','site_visited_date','r2_date', 'pre_ic_date','ic_date', 
+                    'application_date', 'pre_r1_stage_date', 'r1_date', 'scheduled_r1_date' ,'site_visit_date','site_visited_date','r2_date', 'pre_ic_date','ic_date', 
                     'approved_for_investments_date', 'approved_for_residency_date',  
                     'knockout_date', 'rejected_date', 'monitor_date','last_interaction_date','last_edited_on' 
                 ),
@@ -350,7 +349,7 @@ class StartupAdmin(admin.ModelAdmin):
             }),
             ('Timeline', {
                 'fields': (
-                    'application_date', 'pre_r1_stage_date', 'r1_date', 'site_visit_date', 'r2_date', 'site_visited_date','pre_ic_date','ic_date', 
+                    'application_date', 'pre_r1_stage_date', 'r1_date', 'scheduled_r1_date','site_visit_date', 'r2_date', 'site_visited_date','pre_ic_date','ic_date', 
                     'approved_for_investments_date', 'approved_for_residency_date',  
                     'knockout_date', 'rejected_date', 'monitor_date','last_interaction_date','last_edited_on' 
                 ),

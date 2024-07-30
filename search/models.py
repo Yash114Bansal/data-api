@@ -56,9 +56,9 @@ class Team(models.Model):
 class EmailTemplate(models.Model):
     STATUS_CHOICES = [
         ('in_review', 'In-review'),
-        ('to_conduct_r1', 'To conduct R1'),
         ('pre_r1_stage', 'Pre-R1 stage'),
         ('r1', 'R1'),
+        ('scheduled_r1', 'To conduct R1'),
         ('r2', 'R2'),
         ("pre_ic", "Pre-IC"),
         ('ic', 'IC'),
@@ -81,9 +81,9 @@ class Startup(models.Model):
     # New fields for specific statuses
     STATUS_CHOICES = [
         ('in_review', 'In-review'),
-        ('to_conduct_r1', 'To conduct R1'),
         ('pre_r1_stage', 'Pre-R1 stage'),
         ('r1', 'R1'),
+        ('scheduled_r1', 'Scheduled R1'),
         ('site_visit', 'Site visit'),
         ('r2', 'R2'),
         ("pre_ic", "Pre-IC"),
@@ -181,8 +181,8 @@ class Startup(models.Model):
     site_visited_date = models.DateField(
         blank=True, null=True, verbose_name="Site Visited"
     )
-    to_conduct_r1_date = models.DateField(
-        blank=True, null=True, verbose_name="To Conduct Round 1"
+    scheduled_r1_date = models.DateField(
+        blank=True, null=True, verbose_name="Scheduled R1 Date"
     )
     monitor_date = models.DateField(
         blank=True, null=True, verbose_name="Monitor"
@@ -250,8 +250,8 @@ class Startup(models.Model):
     )
     # def clean(self):
         # valid_transitions = {
-        #     'in_review': ['to_conduct_r1', 'pre_r1_stage','knockout', 'r1', 'rejected', 'monitor'],
-        #     'to_conduct_r1': ['pre_r1_stage', 'knockout', 'r1', 'rejected', 'monitor'],
+        #     'in_review': ['scheduled_r1', 'pre_r1_stage','knockout', 'r1', 'rejected', 'monitor'],
+        #     'scheduled_r1': ['pre_r1_stage', 'knockout', 'r1', 'rejected', 'monitor'],
         #     'pre_r1_stage': ['r1', 'rejected', 'monitor'],
         #     'r1': ['r2', 'rejected', 'monitor'],
         #     'r2': ['site_visit', 'rejected', 'monitor'],
@@ -294,7 +294,7 @@ class Startup(models.Model):
             'site_visit': 'site_visit_date',
             'approved_for_residency': 'approved_for_residency_date',
             'approved_for_investments': 'approved_for_investments_date',
-            'to_conduct_r1': 'to_conduct_r1_date',
+            'scheduled_r1': 'scheduled_r1_date',
             'monitor': 'monitor_date',
             'rejected': 'rejected_date',
             'knockout': 'knockout_date'
@@ -323,7 +323,7 @@ class DirectInvestment(models.Model):
         ('r1', 'R1'),
         ('r2', 'R2'),
         ('site_visit', 'Site visit'),
-        ('to_conduct_r1', 'To conduct R1'),
+        ('scheduled_r1', 'Scheduled R1'),
         ('monitor', 'Monitor'),
         ('rejected', 'Rejected'),
         ('knockout', 'Knockout')
@@ -414,7 +414,7 @@ class DirectInvestment(models.Model):
     site_visited_date = models.DateField(
         blank=True, null=True, verbose_name="Site Visited"
     )
-    to_conduct_r1_date = models.DateField(
+    scheduled_r1_date = models.DateField(
         blank=True, null=True, verbose_name="To Conduct Round 1"
     )
     monitor_date = models.DateField(
@@ -493,7 +493,7 @@ class DirectInvestment(models.Model):
             'pre_r1_stage': 'pre_r1_stage_date',
             'r1': 'r1_date',
             'r2': 'r2_date',
-            'to_conduct_r1': 'to_conduct_r1_date',
+            'scheduled_r1': 'scheduled_r1_date',
             'monitor': 'monitor_date',
             'rejected': 'rejected_date',
             'knockout': 'knockout_date'
