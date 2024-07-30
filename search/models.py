@@ -150,6 +150,7 @@ class Startup(models.Model):
     site_visit_comment = models.TextField(blank=True, null=True, verbose_name="Site Visit")
     monitor_comment = models.TextField(blank=True, null=True, verbose_name="Monitor")
     rejected_comment = models.TextField(blank=True, null=True, verbose_name="Rejected")
+    rejection_message = models.CharField(max_length=600,blank=True, null=True, verbose_name="Rejection Message")
 
     approved_for_investments_date = models.DateField(
         blank=True, null=True, verbose_name="Approved for Investments"

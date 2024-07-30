@@ -66,7 +66,12 @@ def sendEmail(startup_instance: Startup):
     email_subject = email_template.subject
     email_body = email_template.body
     email_body = email_body.replace("{{name}}", startup_instance.name)
-    # email_body = email_body.replace("{{link}}", email_template.link)
+    if startup_instance.current_status == 'rejected':
+        reason = startup_instance.rejection_message
+        if reason is None:
+            reason = ''
+        email_body = email_body.replace("{{reason}}", reason)
+
     try:
         send_mail(subject=email_subject, message=email_body, from_email=settings.EMAIL_HOST_USER, recipient_list=[startup_email], fail_silently=False)
         message_status_info.sent_status = 'sent'

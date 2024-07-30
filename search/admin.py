@@ -9,6 +9,7 @@ from django.db.models import Count, Q
 from django.utils.html import format_html
 User = get_user_model()
 
+
 def get_status_counts_for_source(source: Source):
         # Overall status counts for the source
         overall_counts = {
@@ -201,7 +202,7 @@ class StartupAdmin(admin.ModelAdmin):
                 'fields': ('legal_entity', 'name','website' , 'founder_name', 'mobile_number', 'additional_number', 'email',  'about', 'no_of_founders', 
                         'team_size', 'city', 'state', 'sector', 'sub_sector' ,'ARR', 'founding_year', 'equity', 'debt', 
                         'grants', 'video_url', 'relevant_link1', 'relevant_link2','pitch_deck', 'attachment1', 'attachment2', 
-                        'source' ,'source_name', 'language','stage' ,'current_status',
+                        'source' ,'source_name', 'language','stage' ,'current_status', 'rejection_message',
                         'intent_driven', 'fund_alignment', 'community_mindset', 'systemic_change_potential' ,'deal_owner', 'deal_viewer','last_edited_by', ),
             }),
             ('Internal Notes', {
