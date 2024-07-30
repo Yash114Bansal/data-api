@@ -226,3 +226,26 @@ class OtherCompanyInfoDirectInvestments(models.Model):
     
     def __str__(self):
         return self.about_the_company[:50]  # Short description for admin display
+
+class MessageStatusInfo(models.Model):
+    message_status_choices = [
+        ('sent', 'Sent'),
+        ('pending', 'Pending'),
+        ('delivered', 'Delivered'),
+        ('read', 'Read'),
+        ('failed', 'Failed'),
+    ]
+    message_type_choices = [
+        ('email', 'Email'),
+        ('whatsapp', 'Whatsapp'),
+    ]
+    startup = models.ForeignKey(Startup, on_delete=models.CASCADE,blank=True, null=True)
+    application_status = models.CharField(max_length=255)
+    sent_status = models.CharField(max_length=255, choices=message_status_choices)
+    message_type = models.CharField(max_length=255, choices=message_type_choices)
+    message_id = models.CharField(max_length=255, blank=True, null=True)
+    failed_reason = models.TextField(blank=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.startup} - {self.message_type} - {self.sent_status}"

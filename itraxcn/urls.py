@@ -24,6 +24,7 @@ admin.site.site_title = 'Next Bharat'
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path("webhook/",include("extras.urls")),
     path("",include("search.urls"))
 ]
 # urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

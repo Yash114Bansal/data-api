@@ -3,7 +3,7 @@ from django.contrib.auth import get_user_model
 from django.utils import timezone
 from datetime import timedelta
 import requests
-from extras.models import OtherCompanyInfo, OtherCompanyInfoDirectInvestments
+from extras.models import MessageStatusInfo, OtherCompanyInfo, OtherCompanyInfoDirectInvestments
 from .models import Company, Director, GSTData, Source, Startup, StartupStatusCounts, Team, DirectInvestment, EmailTemplate
 from django.db.models import Count, Q
 from django.utils.html import format_html
@@ -154,6 +154,14 @@ class OtherCompanyInfoInline(admin.StackedInline):
     can_delete = False
     verbose_name_plural = 'Additional Details'
 
+class MessageStatusInfoInline(admin.StackedInline):
+    model = MessageStatusInfo
+    fields = ['startup', 'application_status', 'message_type', 'sent_status', 'failed_reason', 'created_at', 'message_id']
+    readonly_fields = ['startup', 'application_status', 'message_type', 'sent_status', 'failed_reason', 'created_at', 'message_id']
+    extra = 0
+    can_delete = False
+    verbose_name_plural = 'Sent Messages Info'
+
 def mark_as_knockout(modeladmin, request, queryset):
     for obj in queryset:
         obj.current_status = 'knockout'
@@ -212,7 +220,7 @@ class StartupAdmin(admin.ModelAdmin):
             }),
             
     )
-    inlines = [OtherCompanyInfoInline]
+    inlines = [OtherCompanyInfoInline, MessageStatusInfoInline]
     
     readonly_fields = (
             'in_review_date', 'pre_r1_stage_date', 'r1_date',  'site_visit_date', 'r2_date',
