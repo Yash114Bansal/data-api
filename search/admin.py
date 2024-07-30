@@ -7,6 +7,10 @@ from extras.models import MessageStatusInfo, OtherCompanyInfo, OtherCompanyInfoD
 from .models import Company, Director, GSTData, Source, Startup, StartupStatusCounts, Team, DirectInvestment, EmailTemplate
 from django.db.models import Count, Q
 from django.utils.html import format_html
+from import_export import resources
+from import_export.admin import ExportMixin
+from import_export.fields import Field
+
 User = get_user_model()
 
 
@@ -126,13 +130,35 @@ class DirectorInline(admin.StackedInline):
     readonly_fields = ('din', 'name')
 
 
+class DirectorResource(resources.ModelResource):
+    class Meta:
+        model = Director
+        fields = ('company__name', 'name', 'phone_number')  # Specify the fields you want to export
+
+class CompanyResource(resources.ModelResource):
+    director_details = Field()
+    class Meta:
+        model = Company
+        fields = ('director_details', 'name')
+    
+    def dehydrate_director_details(self, company):
+        """
+        This method is called for each company row.
+        We'll fetch the related directors and their phone numbers.
+        """
+        directors = Director.objects.filter(company=company).values_list('name', 'phone_number')
+        director_data = []
+        for name, phone_number in directors:
+            director_data.append(f"{name} ({phone_number})")
+        return "\n".join(director_data)
 
 @admin.register(Company)
-class CompanyAdmin(admin.ModelAdmin):
+class CompanyAdmin(ExportMixin, admin.ModelAdmin):
     list_display = ('cin', 'name', 'incorporation_date', 'last_agm_date', 'status')
     search_fields = ('cin', 'name', 'status')
     list_filter = ('status', 'incorporation_date', 'last_agm_date')
     inlines = [DirectorInline]
+    resource_class = CompanyResource
     fields = (
         'cin', 'name', 'incorporation_date', 'last_agm_date', 'registration_number', 'registered_address',
         'balance_sheet_date', 'category', 'sub_category', 'company_class', 'company_type', 'paid_up_capital',
@@ -460,6 +486,7 @@ class StartupAdmin(admin.ModelAdmin):
 
 @admin.register(Director)
 class DirectorAdmin(admin.ModelAdmin):
+    resource_class = DirectorResource
     list_display = ('din', 'name', 'designation', 'date_of_appointment', 'company')
     search_fields = ('din', 'name', 'designation', 'company__name')
     list_filter = ('designation', 'date_of_appointment', 'company')

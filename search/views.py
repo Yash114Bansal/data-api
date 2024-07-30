@@ -290,7 +290,7 @@ def search_company(request):
                     print(pan)
                     c_name = APIService.fetch_company_name_from_pan(pan)
                     print(c_name)
-                    if c_name.lower() == company_name.lower():
+                    if c_name and c_name.lower() == company_name.lower():
                         company_obj.pan = pan
                         company_obj.save()
                         break
