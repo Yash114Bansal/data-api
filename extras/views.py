@@ -18,7 +18,7 @@ def whatsappWebhook(request):
             return HttpResponse(status=400)
         try:
             message_id = data["data"]["message"]["submitted_message_id"]
-            new_status = data["data"]["message"]["status"]
+            new_status = data["data"]["message"]["status"].lower()
         except KeyError:
             print(f'{datetime.now()} - Invalid JSON data received')
             return HttpResponse(status=400)
