@@ -17,8 +17,8 @@ def whatsappWebhook(request):
             print(f'{datetime.now()} - Invalid JSON data received')
             return HttpResponse(status=400)
         try:
-            message_id = data['message']['messageId']
-            new_status = data['message']['status']
+            message_id = data["data"]["message"]["submitted_message_id"]
+            new_status = data["data"]["message"]["status"]
         except KeyError:
             print(f'{datetime.now()} - Invalid JSON data received')
             return HttpResponse(status=400)
@@ -33,9 +33,24 @@ def whatsappWebhook(request):
 def update_status(message_id, new_status):
     try:
         message_status_info = MessageStatusInfo.objects.get(message_id=message_id)
+        orignal_status = message_status_info.sent_status
+        status_priority = {
+            'sent': 3,
+            'delivered': 2,
+            'pending': 1,
+            'failed': 0
+        }
+        try:
+            if status_priority[new_status] < status_priority[orignal_status]:
+                return
+    
+        except KeyError:
+            print(f'{datetime.now()} - Invalid status received: {new_status}')
+
         print(f'{datetime.now()} - Updating status of message_id {message_id} to {new_status}')
     except MessageStatusInfo.DoesNotExist:
         print(f'{datetime.now()} - MessageStatusInfo with message_id {message_id} not found')
         return
+    
     message_status_info.sent_status = new_status
     message_status_info.save()
