@@ -225,10 +225,10 @@ class StartupAdmin(admin.ModelAdmin):
 
     fieldsets = (
         ('Main', {
-                'fields': ('legal_entity', 'name','website' , 'founder_name', 'mobile_number', 'additional_number', 'email',  'about', 'no_of_founders', 
+                'fields': ('current_status','legal_entity', 'name','website' , 'founder_name', 'mobile_number', 'additional_number', 'email',  'about', 'no_of_founders', 
                         'team_size', 'city', 'state', 'sector', 'sub_sector' ,'ARR', 'founding_year', 'equity', 'debt', 
                         'grants', 'video_url', 'relevant_link1', 'relevant_link2','pitch_deck', 'attachment1', 'attachment2', 
-                        'source' ,'source_name', 'language','stage' ,'current_status', 'rejection_message',
+                        'source' ,'source_name', 'language','stage' , 'rejection_message',
                         'intent_driven', 'fund_alignment', 'community_mindset', 'systemic_change_potential' ,'deal_owner', 'deal_viewer','last_edited_by', ),
             }),
             ('Internal Notes', {
