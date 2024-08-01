@@ -38,8 +38,8 @@ def update_status(message_id, new_status, failed_reason):
         status_priority = {
             'read': 4,
             'delivered': 3,
-            'sent': 2,
-            'failed': 1,
+            'failed': 2,
+            'sent': 1,
             'pending': 0,
         }
         try:
