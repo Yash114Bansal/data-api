@@ -219,7 +219,7 @@ mark_as_rejected.short_description = "Mark selected Startups as 'rejected'"
 @admin.register(Startup)
 class StartupAdmin(admin.ModelAdmin):
     list_display = ('name', 'founder_name', 'sector', 'application_date','ARR', 'source_name' ,'current_status')
-    search_fields = ('name', 'founder_name', 'sector', 'current_status')
+    search_fields = ('name', 'founder_name', 'sector', 'current_status', 'mobile_number', 'additional_number')
     list_filter = ('current_status', 'deal_owner', 'sector','source')
     actions = [mark_as_knockout, mark_as_r1_stage, mark_as_rejected, 'delete_selected']
 
