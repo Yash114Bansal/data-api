@@ -49,15 +49,10 @@ def sendWhatsappMessage(phone, startup_instance: Startup):
             "campaignName": f"new_{status}_{language}",
             "templateParams": template_params,
         }
-    print(data)
     url = "https://backend.api-wa.co/campaign/serri-india/api/v2"
     
     r = requests.post(url=url, json=data)
     request = r.request
-    print(f"Method: {request.method}")
-    print(f"URL: {request.url}")
-    print(f"Headers: {request.headers}")
-    print(f"Body: {request.body}")
 
     if(r.status_code == 200):
         message_status_info.sent_status = 'sent'

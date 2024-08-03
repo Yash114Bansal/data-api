@@ -10,6 +10,7 @@ from django.utils.html import format_html
 from import_export import resources
 from import_export.admin import ExportMixin
 from import_export.fields import Field
+from .utils import generateID
 
 User = get_user_model()
 
@@ -218,14 +219,16 @@ mark_as_rejected.short_description = "Mark selected Startups as 'rejected'"
 
 @admin.register(Startup)
 class StartupAdmin(admin.ModelAdmin):
-    list_display = ('name', 'founder_name', 'sector', 'application_date','ARR', 'source_name' ,'current_status')
+    list_display = ('name', "application_number" ,'founder_name', 'sector', 'application_date','ARR', 'source_name' ,'current_status')
     search_fields = ('name', 'founder_name', 'sector', 'current_status', 'mobile_number', 'additional_number')
     list_filter = ('current_status', 'deal_owner', 'sector','source')
     actions = [mark_as_knockout, mark_as_r1_stage, mark_as_rejected, 'delete_selected']
 
+
+
     fieldsets = (
         ('Main', {
-                'fields': ('current_status','legal_entity', 'name','website' , 'founder_name', 'mobile_number', 'additional_number', 'email',  'about', 'no_of_founders', 
+                'fields': ('application_number', 'current_status','legal_entity', 'name','website' , 'founder_name', 'mobile_number', 'additional_number', 'email',  'about', 'no_of_founders', 
                         'team_size', 'city', 'state', 'sector', 'sub_sector' ,'ARR', 'founding_year', 'equity', 'debt', 
                         'grants', 'video_url', 'relevant_link1', 'relevant_link2','pitch_deck', 'attachment1', 'attachment2', 
                         'source' ,'source_name', 'language','stage' , 'rejection_message',
@@ -247,6 +250,10 @@ class StartupAdmin(admin.ModelAdmin):
             }),
             
     )
+    def application_number(self, obj):
+        return generateID(obj)
+    application_number.short_description = 'Application Number'
+
     inlines = [OtherCompanyInfoInline, MessageStatusInfoInline]
     
     readonly_fields = (
@@ -255,6 +262,11 @@ class StartupAdmin(admin.ModelAdmin):
             'approved_for_investments_date', 'approved_for_residency_date', 'ic_date', 
             'pre_ic_date', 'scheduled_r1_date', 'monitor_date', 'knockout_date'
         )
+    def get_readonly_fields(self, request, obj=None):
+        if obj:  # Editing an existing object
+            return self.readonly_fields + ('application_number',)
+        return self.readonly_fields
+    
     def formfield_for_dbfield(self, db_field, **kwargs):
         formfield = super().formfield_for_dbfield(db_field, **kwargs)
         if db_field.name in ['attachment1', 'attachment2', 'pitch_deck', 'video_url']:
