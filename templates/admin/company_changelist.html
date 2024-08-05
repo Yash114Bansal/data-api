@@ -1,0 +1,20 @@
+{% extends "admin/change_list.html" %}
+
+{% block object-tools %}
+    <div class="object-tools" style="display: flex; align-items: center; gap: 10px;">
+        {% if has_add_permission %}
+            <a href="{% url 'admin:search_company_add' %}" 
+               style="display: inline-block; padding: 8px 16px; font-size: 14px; font-weight: bold; text-align: center; text-decoration: none; border-radius: 4px; background-color: #4CAF50; color: white; border: 1px solid transparent; transition: background-color 0.3s; cursor: pointer;"
+               onmouseover="this.style.backgroundColor='#45a049'; this.style.borderColor='#45a049';"
+               onmouseout="this.style.backgroundColor='#4CAF50'; this.style.borderColor='#4CAF50';">
+                Add Company
+            </a>
+        {% endif %}
+        <a href="{% url 'admin:company_export' %}" 
+           style="display: inline-block; padding: 8px 16px; font-size: 14px; font-weight: bold; text-align: center; text-decoration: none; border-radius: 4px; background-color: #008CBA; color: white; border: 1px solid transparent; transition: background-color 0.3s; cursor: pointer;"
+           onmouseover="this.style.backgroundColor='#007bb5'; this.style.borderColor='#007bb5';"
+           onmouseout="this.style.backgroundColor='#008CBA'; this.style.borderColor='#008CBA';">
+            Export Company Directors
+        </a>
+    </div>
+{% endblock %}
