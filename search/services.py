@@ -283,7 +283,6 @@ def syncData(sheetName: str):
                 print(f"Error Creating Startup Instance {e}")
                 pprint(row)
 
-                break
         
         
 
