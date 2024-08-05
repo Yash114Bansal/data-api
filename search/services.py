@@ -92,6 +92,35 @@ def getFormattedRow(row, sheetName):
             formattedRow['Mobile Number'] = row.get("Enter your phone number")
             
         return formattedRow
+    
+    if sheetName == "Next Bharat Ventures Residency Program Startup List":
+        formattedRow = {
+            "Company": row.get("Name of the Company"),
+            "Mobile Number": row.get("Enter your phone number"),
+            "Founder": row.get("Name"),
+            "Email": row.get("Enter your Email"),
+            "About": row.get("What does your company do?"),
+            "Nooffounders": row.get("Number of Founders"),
+            "TeamSize": row.get("Team size"),
+            "City": row.get("City/District"),
+            "State": row.get("State"),
+            "Sector": row.get("Sector"),
+            "12MRevenue": row.get('Revenue in the last 1 year? (In Rupees)'),
+            "Foundingyear": row.get("When did you start this company?"),
+            "Equity": row.get('How much Equity funding have you raised? (INR)'),
+            "Debt": row.get('How much Debt funding have you raised? (INR)'),
+            "Grants": row.get('How much Grant funding have you raised? (INR)'),
+            "Website": row.get("Company Website"),
+            "VideoURL": row.get("Video"),
+            'source': 'Ecosystem Partner',
+            "Current Status": row.get("Status"),
+            "pitch_deck" : row.get("Pitch Decks"),
+            "additional_comments" : row.get("Comments"),
+            "source_name" : "T-hub"
+        }
+
+        formattedRow['About'] += "\n" + row.get("How does your startup improve the livelihoods of rural and informal economies across India?")
+        return formattedRow
 
 
 def syncData(sheetName: str):
@@ -150,8 +179,8 @@ def syncData(sheetName: str):
         elif 'r1' in status:
             if 'pre' in status:
                 currentStatus = 'pre_r1_stage'
-            elif 'conduct' in status:
-                currentStatus = 'to_conduct_r1'
+            elif 'conduct' in status or 'schedule' in status:
+                currentStatus = 'scheduled_r1'
             else:
                 currentStatus = 'r1'
         elif 'r2' in status:
@@ -190,7 +219,10 @@ def syncData(sheetName: str):
             application_date = row.get('Application Date')
 
         source, created = Source.objects.get_or_create(name=row["source"])
+        source_name = row['source']
         
+        if row.get('source_name'):
+            source_name = row['source_name']
         if subSector and len(subSector)> 200:
             subSector = None
 
@@ -215,9 +247,14 @@ def syncData(sheetName: str):
                 state=get_value_or_none(row, 'State'),
                 founding_year=get_value_or_none(row, 'Foundingyear'),
                 application_date=application_date if application_date else datetime.datetime.now(),
-                source_name=row['source'],
+                source_name=source_name,
                 source=source,
+                pitch_deck= get_value_or_none(row, 'pitch_deck'),
+                additional_comments = get_value_or_none(row, 'additional_comments'),
+                email = get_value_or_none(row, 'Email'),
+                website = get_value_or_none(row, 'Website')
             )
+            # breakpoint()
             print(f"Saving {startup_instance.name}")
             startup_instance.save()
 
