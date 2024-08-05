@@ -210,7 +210,7 @@ class Startup(models.Model):
     city = models.CharField(max_length=200, blank=True, null=True)
     state = models.CharField(max_length=100, blank=True, null=True)
     founding_year = models.CharField(max_length=200,blank=True, null=True)
-    application_date = models.DateField(blank=True, null=True)
+    application_date = models.DateField(blank=True, null=True, auto_now_add=True)
     last_edited_on = models.DateTimeField(auto_now=True)
     email = models.EmailField(null=True, blank=True)
     additional_number = models.CharField(max_length=10, blank=True, null=True)
