@@ -11,6 +11,8 @@ from django.db.models import Count, Q
 from django.utils.html import format_html
 from django.urls import path
 from .utils import generateID
+from import_export.admin import ExportMixin
+from import_export import resources
 
 User = get_user_model()
 
@@ -224,12 +226,28 @@ def mark_as_rejected(modeladmin, request, queryset):
         obj.save()
 mark_as_rejected.short_description = "Mark selected Startups as 'rejected'"
 
+class StartupResource(resources.ModelResource):
+    class Meta:
+        model = Startup
+        fields = (
+            'name', 'founder_name', 'current_status', 'website', 'mobile_number',
+            'additional_number', 'email', 'about', 'no_of_founders', 'team_size', 'city',
+            'state', 'sector', 'sub_sector', 'ARR', 'founding_year', 'equity',
+            'debt', 'grants', 'video_url', 'relevant_link1', 'relevant_link2', 'pitch_deck',
+            'attachment1', 'attachment2', 'source', 'source_name', 'language', 'stage',
+            'intent_driven', 'fund_alignment', 'community_mindset', 
+            'systemic_change_potential', 'deal_owner', 'deal_viewer'
+        )
+
+        export_order = fields
+
 @admin.register(Startup)
-class StartupAdmin(admin.ModelAdmin):
+class StartupAdmin(ExportMixin, admin.ModelAdmin):
     list_display = ('name', "application_number" ,'founder_name', 'sector', 'application_date','ARR', 'source_name' ,'current_status')
     search_fields = ('name', 'founder_name', 'sector', 'current_status', 'mobile_number', 'additional_number')
     list_filter = ('current_status', 'deal_owner', 'sector','source')
     actions = [mark_as_knockout, mark_as_r1_stage, mark_as_rejected, 'delete_selected']
+    resource_class = StartupResource
 
 
 
