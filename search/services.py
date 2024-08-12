@@ -119,8 +119,7 @@ def getFormattedRow(row, sheetName):
             "source_name" : "T-hub"
         }
 
-        formattedRow['About'] += "\n" + row.get("How does your startup improve the livelihoods of rural and informal economies across India?")
-        return formattedRow
+        formattedRow['About'] += "\n" + str(row.get("How does your startup improve the livelihoods of rural and informal economies across India?"))
 
 
 def syncData(sheetName: str):
