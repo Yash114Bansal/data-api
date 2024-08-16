@@ -13,4 +13,4 @@ EXPOSE 8000
 RUN python manage.py collectstatic --noinput
 RUN python manage.py migrate
 
-CMD ["python", "manage.py", "runserver"]
+CMD ["gunicorn", "--bind", "0.0.0.0:8000", "itraxcn.wsgi:application"]
