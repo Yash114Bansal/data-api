@@ -12,7 +12,7 @@ class Source(models.Model):
     
 class Company(models.Model):
 
-    cin = models.CharField(max_length=50, unique=True)
+    cin = models.CharField(max_length=50, unique=True, null=True, blank=True)
     name = models.CharField(max_length=255, blank=True, null=True)
     incorporation_date = models.CharField(max_length=50, blank=True, null=True)
     last_agm_date = models.CharField(max_length=50, blank=True, null=True)
@@ -38,6 +38,14 @@ class Company(models.Model):
     status_for_efiling = models.CharField(max_length=50, blank=True, null=True)
     status_under_cirp = models.CharField(max_length=50, blank=True, null=True)
     pan = models.CharField(max_length=50, blank=True, null=True)
+
+    # Extra Fields
+    startup_id = models.CharField(max_length=500, blank=True, null=True, unique=True)
+    city = models.CharField(max_length=200, blank=True, null=True)
+    state = models.CharField(max_length=100, blank=True, null=True)
+    dipp_number = models.CharField(max_length=50, blank=True, null=True)
+    dipp_recognition_status = models.CharField(max_length=50, blank=True, null=True)
+    sector = models.CharField(max_length=400, blank=True, null=True)
 
     class Meta:
         verbose_name_plural = "Companies"
