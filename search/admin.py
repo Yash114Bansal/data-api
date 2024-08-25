@@ -188,7 +188,9 @@ class CompanyAdmin(admin.ModelAdmin):
         'mentorship_participant', 'mentorship',
 
         # Social Information
-        'social_infos'
+        'social_infos',
+
+        'gst'
     )
     # def get_queryset(self, request):
     #     queryset = super().get_queryset(request)

@@ -74,7 +74,7 @@ class Company(models.Model):
     mentorship_participant = models.CharField(max_length=255, blank=True, null=True)
     mentorship = models.CharField(max_length=255, blank=True, null=True)
     social_infos = models.TextField(blank=True, null=True)
-
+    gst = models.CharField(max_length=255, blank=True, null=True)
     class Meta:
         verbose_name_plural = "Companies"
 
