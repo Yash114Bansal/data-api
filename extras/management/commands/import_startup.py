@@ -17,13 +17,21 @@ class Command(BaseCommand):
                 reader = csv.DictReader(file)
                 for row in reader:
                     startup_id = row['user.uniqueId']
+                    cin = row.get('user.startup.cin', '').strip()
+                    try:
+                        number = float(cin)
+                        formatted_number = "{:.0f}".format(number)
+                        cin = str(formatted_number)
+                    except:
+                        pass
                     try:
                         startup = Startup.objects.get(startup_id=startup_id)
+                    except Startup.DoesNotExist:
+                        startup = Startup.objects.get(cin=cin)
                     except Startup.DoesNotExist:
                         self.stdout.write(self.style.WARNING(f'Startup {startup_id} does not exist. Skipping.'))
                         continue
                     email = row.get('user.email', '').strip()
-                    cin = row.get('user.startup.cin', '').strip()
                     pan = row.get('user.startup.pan', '').strip()
                     stage = row.get('user.startup.stage', '').strip()
                     website = row.get('user.startup.website', '').strip()
@@ -90,10 +98,11 @@ class Command(BaseCommand):
                     }
                     try:
                         for field, value in updates.items():
-                            if value:  # Only update if the value is not empty
+                            if value and not getattr(startup, field):  # Only update if the value is not empty
                                 setattr(startup, field, value)
                         startup.save()
                     except Exception as e:
+                        breakpoint()
                         self.stdout.write(self.style.ERROR(f'Failed to save startup {startup_id} name {startup.name}'))
                         self.stdout.write(self.style.ERROR(f'Error: {e}'))
                         continue
