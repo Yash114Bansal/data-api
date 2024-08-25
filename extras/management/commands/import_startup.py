@@ -10,7 +10,7 @@ class Command(BaseCommand):
 
     def handle(self, *args, **kwargs):
         csv_file = kwargs['csv_file']
-        flag = True
+        
 
         try:
             with open(csv_file, mode='r') as file:
@@ -18,10 +18,6 @@ class Command(BaseCommand):
                 for row in reader:
                     startup_id = row['user.uniqueId']
                     cin = row.get('user.startup.cin', '').strip()
-                    if not flag:
-                        self.stdout.write(self.style.ERROR(f' {startup_id} name {cin}'))
-                        breakpoint()
-                        break
                     try:
                         number = float(cin)
                         formatted_number = "{:.0f}".format(number)
@@ -109,14 +105,11 @@ class Command(BaseCommand):
                             if value and not getattr(startup, field):  # Only update if the value is not empty
                                 setattr(startup, field, value)
                         startup.save()
-                        
                     except Exception as e:
                         self.stdout.write(self.style.ERROR(f'Failed to save startup {startup_id} name {startup.name}'))
                         self.stdout.write(self.style.ERROR(f'Error: {e}'))
                         continue
                     self.stdout.write(self.style.SUCCESS(f'Successfully Saved startup {startup_id} name {startup.name}'))
-                    if startup.name == 'AVARAH LIFESTYLES LLP':
-                        flag = False
 
         except FileNotFoundError:
             raise CommandError(f"File '{csv_file}' does not exist.")
