@@ -102,7 +102,6 @@ class Command(BaseCommand):
                                 setattr(startup, field, value)
                         startup.save()
                     except Exception as e:
-                        breakpoint()
                         self.stdout.write(self.style.ERROR(f'Failed to save startup {startup_id} name {startup.name}'))
                         self.stdout.write(self.style.ERROR(f'Error: {e}'))
                         continue
