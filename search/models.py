@@ -47,6 +47,34 @@ class Company(models.Model):
     dipp_recognition_status = models.CharField(max_length=50, blank=True, null=True)
     sector = models.CharField(max_length=400, blank=True, null=True)
 
+    # More Extra Fields
+    stage = models.CharField(max_length=255, blank=True, null=True)
+    website = models.URLField(max_length=255, blank=True, null=True)
+    mobile_app_link = models.URLField(max_length=255, blank=True, null=True)
+    industries_id = models.CharField(max_length=255, blank=True, null=True)
+    industries_name = models.CharField(max_length=255, blank=True, null=True)
+    industries_industryName = models.CharField(max_length=255, blank=True, null=True)
+    sectors_id = models.CharField(max_length=255, blank=True, null=True)
+    sectors_name = models.CharField(max_length=255, blank=True, null=True)
+    sectors_sectionName = models.CharField(max_length=255, blank=True, null=True)
+    dipp_certified = models.CharField(max_length=255, blank=True, null=True)
+    form56_applied = models.CharField(max_length=255, blank=True, null=True)
+    form56_status = models.CharField(max_length=255, blank=True, null=True)
+    form80iac_applied = models.CharField(max_length=255, blank=True, null=True)
+    form80iac_status = models.CharField(max_length=255, blank=True, null=True)
+    funded = models.CharField(max_length=255, blank=True, null=True)
+    looking_to_connect_to = models.JSONField(default=list, blank=True, null=True)  # For storing list of looking_to_connect_to
+    location_country = models.CharField(max_length=255, blank=True, null=True)
+    location_state = models.CharField(max_length=255, blank=True, null=True)
+    location_city = models.CharField(max_length=255, blank=True, null=True)
+    location_district = models.CharField(max_length=255, blank=True, null=True)
+    recognition_form_request_id = models.CharField(max_length=255, blank=True, null=True)
+    due_diligence_request_id = models.CharField(max_length=255, blank=True, null=True)
+    incubation_program_request_id = models.CharField(max_length=255, blank=True, null=True)
+    mentorship_participant = models.CharField(max_length=255, blank=True, null=True)
+    mentorship = models.CharField(max_length=255, blank=True, null=True)
+    social_infos = models.TextField(blank=True, null=True)
+
     class Meta:
         verbose_name_plural = "Companies"
 

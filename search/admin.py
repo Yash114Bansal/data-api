@@ -160,11 +160,35 @@ class CompanyAdmin(admin.ModelAdmin):
     change_list_template = "admin/company_changelist.html"
     
     fields = (
+        # Basic Company Information
         'cin', 'name', 'incorporation_date', 'last_agm_date', 'registration_number', 'registered_address',
         'balance_sheet_date', 'category', 'sub_category', 'company_class', 'company_type', 'paid_up_capital',
         'authorised_capital', 'status', 'roc_office', 'country_of_incorporation', 'description_of_main_division',
         'email_id', 'address_other_than_registered_office', 'number_of_members', 'active_compliance',
         'suspended_at_stock_exchange', 'nature_of_business', 'status_for_efiling', 'status_under_cirp', 'pan',
+
+        # Extra Fields - Startup Information
+        'startup_id', 'city', 'state', 'dipp_number', 'dipp_recognition_status', 'sector',
+
+        # More Extra Fields - Industry and Sector Information
+        'stage', 'website', 'mobile_app_link', 'industries_id', 'industries_name', 'industries_industryName',
+        'sectors_id', 'sectors_name', 'sectors_sectionName',
+
+        # Additional Certification Fields
+        'dipp_certified', 'form56_applied', 'form56_status', 'form80iac_applied', 'form80iac_status',
+
+        # Funding and Networking Information
+        'funded', 'looking_to_connect_to',
+
+        # Location Information
+        'location_country', 'location_state', 'location_city', 'location_district',
+
+        # Request IDs and Participation
+        'recognition_form_request_id', 'due_diligence_request_id', 'incubation_program_request_id',
+        'mentorship_participant', 'mentorship',
+
+        # Social Information
+        'social_infos'
     )
     # def get_queryset(self, request):
     #     queryset = super().get_queryset(request)
