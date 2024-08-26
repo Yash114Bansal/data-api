@@ -75,6 +75,15 @@ class Company(models.Model):
     mentorship = models.CharField(max_length=255, blank=True, null=True)
     social_infos = models.TextField(blank=True, null=True)
     gst = models.CharField(max_length=255, blank=True, null=True)
+
+
+    # TurnOver Fields
+    company_type=models.CharField(max_length=255, blank=True, null=True)
+    turnover=models.CharField(max_length=255, blank=True, null=True)
+    aggregate_turnover_fy= models.CharField(max_length=255, blank=True, null=True)
+    gstr_type= models.CharField(max_length=255, blank=True, null=True)
+    ntc_reason= models.CharField(max_length=255, blank=True, null=True)
+
     class Meta:
         verbose_name_plural = "Companies"
 
@@ -547,7 +556,7 @@ class DirectInvestment(models.Model):
 
 class Director(models.Model):
     company = models.ForeignKey(Company, related_name='directors', on_delete=models.CASCADE)
-    din = models.CharField(max_length=50, unique=True)
+    din = models.CharField(max_length=50, unique=True, null=True, blank=True)
     name = models.CharField(max_length=255, blank=True, null=True)
     designation = models.CharField(max_length=100, blank=True, null=True)
     date_of_appointment = models.CharField(max_length=50, blank=True, null=True)

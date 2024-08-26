@@ -190,7 +190,13 @@ class CompanyAdmin(admin.ModelAdmin):
         # Social Information
         'social_infos',
 
-        'gst'
+        'gst',
+
+        # Additional Information
+        "company_type",
+
+        # Turnover Information
+        'turnover', 'aggregate_turnover_fy', 'gstr_type', 'ntc_reason',
     )
     # def get_queryset(self, request):
     #     queryset = super().get_queryset(request)
