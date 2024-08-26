@@ -192,9 +192,6 @@ class CompanyAdmin(admin.ModelAdmin):
 
         'gst',
 
-        # Additional Information
-        "company_type",
-
         # Turnover Information
         'turnover', 'aggregate_turnover_fy', 'gstr_type', 'ntc_reason',
     )
