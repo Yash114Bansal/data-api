@@ -10,13 +10,19 @@ class Command(BaseCommand):
 
     def handle(self, *args, **kwargs):
         csv_file = kwargs['csv_file']
-        
+        flag = False
 
         try:
             with open(csv_file, mode='r') as file:
                 reader = csv.DictReader(file)
                 for row in reader:
                     gst = row['GSTIN']
+                    if gst == '27AAQCM0274M1ZX':
+                        flag = True
+                    if not flag:
+
+                        continue
+                    
                     if not gst:
                         continue
                     startup = Startup.objects.filter(gst=gst)
@@ -62,8 +68,11 @@ class Command(BaseCommand):
                             except Director.DoesNotExist:
                                 director = Director(name=member, company=startup)
                                 director.save()
-                    startup.save()
-
+                    try:
+                        startup.save()
+                    except Exception as e:
+                        self.stdout.write(self.style.ERROR(f'Error saving {startup.name}: {e}'))
+                        continue
 
                     self.stdout.write(self.style.SUCCESS(f'Successfully Saved {startup.name}'))
 
