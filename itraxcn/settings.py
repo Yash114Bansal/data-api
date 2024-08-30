@@ -55,7 +55,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'search',
     'extras',
-    'import_export'
+    'import_export',
+    'others'
 ]
 
 MIDDLEWARE = [
