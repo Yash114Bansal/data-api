@@ -22,6 +22,7 @@ class Accelerator(models.Model):
     landline_number = models.CharField(max_length=30, blank=True, null=True)
     website = models.CharField(max_length=300, blank=True, null=True)
     social_media_url = models.CharField(max_length=300, blank=True, null=True)
+    portfolio_link = models.CharField(max_length=300, blank=True, null=True)
 
     def __str__(self):
         return self.company_name
@@ -48,6 +49,7 @@ class Incubator(models.Model):
     landline_number = models.CharField(max_length=30, blank=True, null=True)
     website = models.CharField(max_length=300, blank=True, null=True)
     social_media_url = models.CharField(max_length=300, blank=True, null=True)
+    portfolio_link = models.CharField(max_length=300, blank=True, null=True)
 
     def __str__(self):
 
